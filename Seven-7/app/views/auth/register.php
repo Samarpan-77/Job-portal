@@ -1,0 +1,69 @@
+﻿<?php require_once BASE_PATH . '/app/views/layout/header.php'; ?>
+
+<h3>Register</h3>
+
+<?php if (!empty($errorMessage)): ?>
+    <div class="alert alert-danger" role="alert">
+        <?= htmlspecialchars($errorMessage, ENT_QUOTES, 'UTF-8') ?>
+    </div>
+<?php endif; ?>
+
+<form method="POST" action="<?= base_url('register') ?>">
+    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+
+    <div class="mb-3">
+        <label>Name</label>
+        <input type="text" name="name" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label>Email</label>
+        <input type="email" name="email" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label>Password</label>
+        <div class="input-group">
+            <input type="password" id="register-password" name="password" class="form-control" required>
+            <button
+                type="button"
+                class="btn btn-outline-secondary"
+                data-toggle-password="register-password"
+                aria-label="Show password"
+                title="Show password"
+            >&#128065;</button>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label>Account Type</label>
+        <select name="role" class="form-control">
+            <option value="user">Job Seeker</option>
+            <option value="employer">Employer</option>
+        </select>
+    </div>
+
+    <button class="btn btn-success">Register</button>
+</form>
+
+<script>
+document.addEventListener('click', function (event) {
+    var button = event.target.closest('[data-toggle-password]');
+    if (!button) {
+        return;
+    }
+
+    var inputId = button.getAttribute('data-toggle-password');
+    var input = document.getElementById(inputId);
+    if (!input) {
+        return;
+    }
+
+    var showPassword = input.type === 'password';
+    input.type = showPassword ? 'text' : 'password';
+    button.setAttribute('aria-label', showPassword ? 'Hide password' : 'Show password');
+    button.setAttribute('title', showPassword ? 'Hide password' : 'Show password');
+});
+</script>
+
+<?php require_once BASE_PATH . '/app/views/layout/footer.php'; ?>
