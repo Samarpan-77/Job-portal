@@ -49,6 +49,31 @@ class ApplicationController
                     VALUES (?,?,?)
                 ");
                 $stmt->execute([$job_id, $user_id, $resume_id]);
+
+                $applicationId = (int)$this->db->lastInsertId();
+                $jobStmt = $this->db->prepare("
+                    SELECT title, employer_id
+                    FROM jobs
+                    WHERE id = ?
+                    LIMIT 1
+                ");
+                $jobStmt->execute([$job_id]);
+                $job = $jobStmt->fetch(PDO::FETCH_ASSOC);
+
+                if ($job) {
+                    $title = trim((string)$job['title']);
+                    Notification::create(
+                        (int)$job['employer_id'],
+                        'New application received',
+                        'A candidate applied for "' . $title . '". Review the application and update the status.',
+                        'application',
+                        $applicationId
+                    );
+                }
+
+                $_SESSION['flash_success'] = 'Application submitted successfully. You will be notified when the status changes.';
+            } else {
+                $_SESSION['flash_info'] = 'You have already applied to this job.';
             }
 
             redirect_to('application/myApplications');
@@ -164,10 +189,122 @@ class ApplicationController
         $status = strtolower((string)$status);
 
         if ($applicationId > 0 && in_array($status, $allowed, true)) {
-            $stmt = $this->db->prepare("UPDATE applications SET status=? WHERE id=?");
-            $stmt->execute([$status, $applicationId]);
+            $detailStmt = $this->db->prepare("
+                SELECT a.id, a.user_id, a.status AS current_status, j.title, j.employer_id
+                FROM applications a
+                JOIN jobs j ON a.job_id = j.id
+                WHERE a.id = ?
+                LIMIT 1
+            ");
+            $detailStmt->execute([$applicationId]);
+            $application = $detailStmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$application) {
+                $_SESSION['flash_error'] = 'Application not found.';
+                redirect_to('application/employerApplications');
+            }
+
+            $isAdmin = (($_SESSION['role'] ?? '') === 'admin');
+            $isOwnerEmployer = ((int)$application['employer_id'] === (int)$_SESSION['user_id']);
+
+            if (!$isAdmin && !$isOwnerEmployer) {
+                require BASE_PATH . '/app/views/errors/unauthorized.php';
+                exit;
+            }
+
+            $currentStatus = strtolower((string)$application['current_status']);
+            $jobTitle = trim((string)$application['title']);
+            $statusLabel = ucfirst($status);
+
+            if ($currentStatus !== $status) {
+                $stmt = $this->db->prepare("UPDATE applications SET status=? WHERE id=?");
+                $stmt->execute([$status, $applicationId]);
+
+                Notification::create(
+                    (int)$application['user_id'],
+                    'Application status updated',
+                    'Your application for "' . $jobTitle . '" is now marked as ' . $statusLabel . '.',
+                    'application',
+                    $applicationId
+                );
+
+                $_SESSION['flash_success'] = 'Application status updated to ' . $statusLabel . '. Candidate has been notified.';
+            } else {
+                $_SESSION['flash_info'] = 'Application is already marked as ' . $statusLabel . '.';
+            }
         }
 
+        redirect_to('application/employerApplications');
+    }
+
+    public function delete($applicationId = null)
+    {
+        if (!isset($_SESSION['user_id'])) {
+            require BASE_PATH . '/app/views/errors/unauthorized.php';
+            exit;
+        }
+
+        $applicationId = (int)$applicationId;
+        if ($applicationId <= 0) {
+            $_SESSION['flash_error'] = 'Invalid application.';
+            redirect_to('application');
+        }
+
+        $detailStmt = $this->db->prepare("
+            SELECT a.id, a.user_id, j.employer_id, j.title
+            FROM applications a
+            JOIN jobs j ON a.job_id = j.id
+            WHERE a.id = ?
+            LIMIT 1
+        ");
+        $detailStmt->execute([$applicationId]);
+        $application = $detailStmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$application) {
+            $_SESSION['flash_error'] = 'Application not found.';
+            redirect_to('application');
+        }
+
+        $role = $_SESSION['role'] ?? '';
+        $userId = (int)$_SESSION['user_id'];
+        $isAdmin = $role === 'admin';
+        $isApplicant = ($role === 'user' && (int)$application['user_id'] === $userId);
+        $isOwnerEmployer = ($role === 'employer' && (int)$application['employer_id'] === $userId);
+
+        if (!$isAdmin && !$isApplicant && !$isOwnerEmployer) {
+            require BASE_PATH . '/app/views/errors/unauthorized.php';
+            exit;
+        }
+
+        $deleteStmt = $this->db->prepare("DELETE FROM applications WHERE id = ?");
+        $deleteStmt->execute([$applicationId]);
+
+        if ($isApplicant) {
+            Notification::create(
+                (int)$application['employer_id'],
+                'Application withdrawn',
+                'A candidate withdrew their application for "' . trim((string)$application['title']) . '".',
+                'application',
+                $applicationId
+            );
+            $_SESSION['flash_success'] = 'Application deleted successfully.';
+            redirect_to('application/myApplications');
+        }
+
+        if ($isOwnerEmployer || $isAdmin) {
+            Notification::create(
+                (int)$application['user_id'],
+                'Application removed',
+                'Your application for "' . trim((string)$application['title']) . '" has been removed by the hiring team.',
+                'application',
+                $applicationId
+            );
+        }
+
+        $_SESSION['flash_success'] = 'Application deleted successfully.';
+        if ($role === 'admin') {
+            redirect_to('admin/applications');
+        }
         redirect_to('application/employerApplications');
     }
 }
