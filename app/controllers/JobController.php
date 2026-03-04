@@ -58,6 +58,20 @@ class JobController
         require BASE_PATH . '/app/views/jobs/view.php';
     }
 
+    public function recommendations()
+    {
+        RoleMiddleware::requireRole('user');
+
+        $service = new JobRecommendationService();
+        $recommendation = $service->getRecommendationsForUser((int)$_SESSION['user_id'], 6);
+        $recommendedJobs = $recommendation['jobs'] ?? [];
+        $matchedCluster = $recommendation['matched_cluster'] ?? null;
+        $clusterSize = $recommendation['cluster_size'] ?? 0;
+        $message = $recommendation['message'] ?? '';
+
+        require BASE_PATH . '/app/views/jobs/recommendations.php';
+    }
+
     public function delete($id = null)
     {
         if (!isset($_SESSION['user_id'])) {

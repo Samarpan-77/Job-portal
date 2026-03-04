@@ -49,6 +49,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="<?= base_url('interview/start') ?>">AI Interview</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= base_url('job/recommendations') ?>">Recommendations</a>
+                        </li>
                     <?php endif; ?>
 
                     <?php if ($_SESSION['role'] == 'admin'): ?>

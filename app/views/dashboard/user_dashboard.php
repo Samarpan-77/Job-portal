@@ -34,6 +34,14 @@
             <a href="<?= base_url('interview/start') ?>" class="btn btn-outline-primary btn-sm">Practice Interview</a>
         </div>
     </div>
+
+    <div class="col-md-4">
+        <div class="glass-card metric-card">
+            <h5>Smart Recommendations</h5>
+            <p class="metric-value">ML</p>
+            <a href="<?= base_url('job/recommendations') ?>" class="btn btn-outline-primary btn-sm">Recommended Jobs</a>
+        </div>
+    </div>
 </div>
 
 <?php require_once BASE_PATH . '/app/views/layout/footer.php'; ?>
