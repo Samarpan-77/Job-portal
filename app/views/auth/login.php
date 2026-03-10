@@ -52,6 +52,7 @@
             <button class="btn btn-primary">Login</button>
         </form>
 
+        <p class="mt-3 mb-0"><a href="<?= base_url('forgot-password') ?>">Forgot password?</a></p>
         <p class="mt-3 mb-0">No account? <a href="<?= base_url('register') ?>">Create one</a></p>
     </div>
 </section>

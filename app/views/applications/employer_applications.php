@@ -35,7 +35,11 @@
     <?php foreach ($applications as $app): ?>
         <tr>
             <td><?= htmlspecialchars($app['job_title'], ENT_QUOTES, 'UTF-8') ?></td>
-            <td><?= htmlspecialchars($app['name'], ENT_QUOTES, 'UTF-8') ?></td>
+            <td>
+                <a href="<?= base_url('profile/view/' . $app['user_id']) ?>" class="job-company-link">
+                    <?= htmlspecialchars($app['name'], ENT_QUOTES, 'UTF-8') ?>
+                </a>
+            </td>
             <td><?= htmlspecialchars($app['email'], ENT_QUOTES, 'UTF-8') ?></td>
             <td>
                 <?php

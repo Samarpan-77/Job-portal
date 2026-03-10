@@ -41,6 +41,8 @@ class DashboardController
             $stmtApps->execute([$userId]);
             $application_count = (int)$stmtApps->fetchColumn();
 
+            $profile = User::getPublicProfileById($userId);
+
             require BASE_PATH . '/app/views/dashboard/employer_dashboard.php';
             return;
         }
@@ -56,6 +58,9 @@ class DashboardController
         $stmtInterviews = $this->db->prepare("SELECT COUNT(*) FROM interview_sessions WHERE user_id = ?");
         $stmtInterviews->execute([$userId]);
         $interview_count = (int)$stmtInterviews->fetchColumn();
+
+        $saved_job_count = SavedJob::countByUser($userId);
+        $profile = User::getPublicProfileById($userId);
 
         require BASE_PATH . '/app/views/dashboard/user_dashboard.php';
     }

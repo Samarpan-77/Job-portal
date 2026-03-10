@@ -37,6 +37,12 @@
                     </li>
 
                     <li class="nav-item">
+                        <a class="nav-link" href="<?= base_url('profile') ?>">
+                            <?= ($_SESSION['role'] ?? '') === 'employer' ? 'Company Profile' : 'Profile' ?>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
                         <a class="nav-link" href="<?= base_url('notification') ?>">
                             Notifications
                             <?php if ($unreadNotifications > 0): ?>
@@ -51,6 +57,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="<?= base_url('job/recommendations') ?>">Recommendations</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= base_url('job/saved') ?>">Saved Jobs</a>
                         </li>
                     <?php endif; ?>
 

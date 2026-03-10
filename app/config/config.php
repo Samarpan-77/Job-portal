@@ -16,10 +16,29 @@ if (is_file($envFile) && is_readable($envFile)) {
         [$key, $value] = explode('=', $line, 2);
         $key = trim($key);
         $value = trim($value);
-        if ($key !== '' && getenv($key) === false) {
-            putenv($key . '=' . $value);
-            $_ENV[$key] = $value;
+
+        if ($key === '') {
+            continue;
         }
+
+        // Strip wrapping quotes and inline comments for unquoted values.
+        if (strlen($value) >= 2) {
+            $firstChar = $value[0];
+            $lastChar = $value[strlen($value) - 1];
+            if (($firstChar === '"' && $lastChar === '"') || ($firstChar === "'" && $lastChar === "'")) {
+                $value = substr($value, 1, -1);
+            } else {
+                $hashPos = strpos($value, '#');
+                if ($hashPos !== false) {
+                    $value = rtrim(substr($value, 0, $hashPos));
+                }
+            }
+        }
+
+        // Always apply .env so local changes are reflected without stale process env values.
+        putenv($key . '=' . $value);
+        $_ENV[$key] = $value;
+        $_SERVER[$key] = $value;
     }
 }
 

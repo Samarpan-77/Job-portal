@@ -62,6 +62,8 @@ if (empty($urlParts[0])) {
         'login' => ['AuthController', 'login'],
         'register' => ['AuthController', 'register'],
         'logout' => ['AuthController', 'logout'],
+        'forgot-password' => ['AuthController', 'forgotPassword'],
+        'reset-password' => ['AuthController', 'resetPassword'],
         'dashboard' => ['DashboardController', 'index'],
     ];
 

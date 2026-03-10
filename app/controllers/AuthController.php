@@ -3,6 +3,15 @@
 
 class AuthController
 {
+    private const RESET_TOKEN_BYTES = 32;
+    private const DEFAULT_RESET_TOKEN_EXPIRY_SECONDS = 900;
+
+    private function getResetTokenExpirySeconds(): int
+    {
+        $configured = (int)(getenv('RESET_TOKEN_EXPIRY_SECONDS') ?: 0);
+        return $configured >= 60 ? $configured : self::DEFAULT_RESET_TOKEN_EXPIRY_SECONDS;
+    }
+
     public function index()
     {
         if (isset($_SESSION['user_id'])) {
@@ -97,5 +106,105 @@ class AuthController
     {
         session_destroy();
         redirect_to('auth/login');
+    }
+
+    public function forgotPassword()
+    {
+        $errorMessage = '';
+        $successMessage = '';
+        $devResetLink = '';
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            verify_csrf();
+
+            $email = trim((string)($_POST['email'] ?? ''));
+            $successMessage = 'If that email exists, a password reset link has been generated.';
+
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $errorMessage = 'Please enter a valid email address.';
+                $successMessage = '';
+            } else {
+                $user = User::findByEmail($email);
+                if ($user) {
+                    $token = bin2hex(random_bytes(self::RESET_TOKEN_BYTES));
+                    $tokenHash = hash('sha256', $token);
+                    $resetExpirySeconds = $this->getResetTokenExpirySeconds();
+                    $expiresAt = date('Y-m-d H:i:s', time() + $resetExpirySeconds);
+
+                    PasswordReset::deleteByUserId((int)$user['id']);
+                    $created = PasswordReset::create((int)$user['id'], $tokenHash, $expiresAt);
+
+                    if ($created) {
+                        $resetLink = base_url('reset-password?token=' . urlencode($token));
+                        $mailSent = MailService::sendPasswordResetEmail(
+                            (string)$user['email'],
+                            (string)($user['name'] ?? ''),
+                            $resetLink,
+                            $resetExpirySeconds
+                        );
+
+                        if (!$mailSent && getenv('MAIL_SHOW_DEV_RESET_LINK') === '1') {
+                            $devResetLink = $resetLink;
+                        }
+                    }
+                }
+            }
+        }
+
+        require BASE_PATH . '/app/views/auth/forgot_password.php';
+    }
+
+    public function resetPassword()
+    {
+        $errorMessage = '';
+        $token = trim((string)($_GET['token'] ?? ($_POST['token'] ?? '')));
+        $isTokenFormatValid = strlen($token) >= 32 && ctype_xdigit($token);
+        $canShowForm = false;
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            verify_csrf();
+
+            $password = (string)($_POST['password'] ?? '');
+            $confirmPassword = (string)($_POST['confirm_password'] ?? '');
+
+            if (!$isTokenFormatValid) {
+                $errorMessage = 'Invalid or expired reset link.';
+            } else {
+                $resetRequest = PasswordReset::findValidByToken($token);
+                if (!$resetRequest) {
+                    $errorMessage = 'Invalid or expired reset link.';
+                } else {
+                    $canShowForm = true;
+                    if (strlen($password) < 8) {
+                        $errorMessage = 'Password must be at least 8 characters.';
+                    } elseif ($password !== $confirmPassword) {
+                        $errorMessage = 'Passwords do not match.';
+                    } else {
+                        $newHash = password_hash($password, PASSWORD_BCRYPT);
+                        $updated = User::updatePassword((int)$resetRequest['user_id'], $newHash);
+
+                        if ($updated) {
+                            PasswordReset::markUsed((int)$resetRequest['id']);
+                            PasswordReset::deleteByUserId((int)$resetRequest['user_id']);
+                            $_SESSION['flash_success'] = 'Password reset successful. Please login.';
+                            redirect_to('login');
+                        }
+
+                        $errorMessage = 'Failed to reset password. Please try again.';
+                    }
+                }
+            }
+        } elseif (!$isTokenFormatValid) {
+            $errorMessage = 'Invalid or expired reset link.';
+        } else {
+            $resetRequest = PasswordReset::findValidByToken($token);
+            if (!$resetRequest) {
+                $errorMessage = 'Invalid or expired reset link.';
+            } else {
+                $canShowForm = true;
+            }
+        }
+
+        require BASE_PATH . '/app/views/auth/reset_password.php';
     }
 }
