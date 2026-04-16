@@ -1,0 +1,9 @@
+[02-Mar-2026 15:30:49 Europe/Berlin] PHP Warning:  Undefined array key "REQUEST_METHOD" in C:\xampp\htdocs\Seven-7\app\controllers\AuthController.php on line 40
+[04-Mar-2026 08:20:52 Europe/Berlin] PHPMailer is not installed. Run: composer require phpmailer/phpmailer
+[04-Mar-2026 08:23:39 Europe/Berlin] PHPMailer is not installed. Run: composer require phpmailer/phpmailer
+[04-Mar-2026 08:24:33 Europe/Berlin] PHPMailer is not installed. Run: composer require phpmailer/phpmailer
+[04-Mar-2026 08:38:55 Europe/Berlin] PHPMailer is not installed. Run: composer require phpmailer/phpmailer
+[04-Mar-2026 08:39:36 Europe/Berlin] PHPMailer is not installed. Run: composer require phpmailer/phpmailer
+[04-Mar-2026 08:45:20 Europe/Berlin] SMTP auth enabled but MAIL_USERNAME/MAIL_PASSWORD are missing.
+[04-Mar-2026 08:45:24 Europe/Berlin] SMTP auth enabled but MAIL_USERNAME/MAIL_PASSWORD are missing.
+[04-Mar-2026 08:48:42 Europe/Berlin] SMTP auth enabled but MAIL_USERNAME/MAIL_PASSWORD are missing.
