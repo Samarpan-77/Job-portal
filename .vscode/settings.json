@@ -1,0 +1,15 @@
+{
+  "intelephense.files.exclude": [
+    "**/.git/**",
+    "**/node_modules/**",
+    "**/vendor/**",
+    "**/PHPMailer/**",
+    "**/PHPMailer/PHPMailer-master/**"
+  ],
+  "files.exclude": {
+    "**/PHPMailer/PHPMailer-master/**": true
+  },
+  "search.exclude": {
+    "**/PHPMailer/PHPMailer-master/**": true
+  }
+}
