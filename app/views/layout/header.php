@@ -11,7 +11,14 @@
     <link rel="stylesheet" href="<?= base_url('assets/css/app.css') ?>">
 </head>
 
-<body>
+<?php
+$currentPath = trim($_GET['url'] ?? '', '/');
+$firstSegment = $currentPath === '' ? '' : explode('/', $currentPath)[0];
+$isDashboard = ($firstSegment === 'dashboard' || ($firstSegment === '' && isset($_SESSION['user_id'])));
+$bodyClass = $isDashboard ? 'page-dashboard' : '';
+?>
+
+<body class="<?= htmlspecialchars($bodyClass, ENT_QUOTES, 'UTF-8') ?>">
     <nav class="navbar navbar-expand-lg navbar-dark app-navbar sticky-top">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center gap-2 fw-semibold" href="<?= BASE_URL ?>">
