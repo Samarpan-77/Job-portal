@@ -8,7 +8,8 @@ class JobController
 
     public function index()
     {
-        $jobs = Job::getAll();
+        $isUser = (($_SESSION['role'] ?? '') === 'user');
+        $jobs = $isUser ? Job::getAllForUser() : Job::getAll();
         $savedJobs = $this->getSavedJobMap();
         require BASE_PATH . '/app/views/jobs/list.php';
     }
@@ -33,11 +34,31 @@ class JobController
         $description = trim((string)($_POST['description'] ?? ''));
         $salary = trim((string)($_POST['salary'] ?? ''));
         $location = trim((string)($_POST['location'] ?? ''));
+        $applicationDeadline = trim((string)($_POST['application_deadline'] ?? ''));
         $employerId = (int)$_SESSION['user_id'];
 
         if ($title === '' || $description === '') {
             $_SESSION['flash_error'] = 'Title and description are required.';
             redirect_to('job/create');
+        }
+
+        if ($applicationDeadline !== '') {
+            $deadlineDate = DateTime::createFromFormat('Y-m-d', $applicationDeadline);
+            $hasValidFormat = $deadlineDate instanceof DateTime
+                && $deadlineDate->format('Y-m-d') === $applicationDeadline;
+
+            if (!$hasValidFormat) {
+                $_SESSION['flash_error'] = 'Please select a valid application deadline.';
+                redirect_to('job/create');
+            }
+
+            $today = new DateTime('today');
+            if ($deadlineDate < $today) {
+                $_SESSION['flash_error'] = 'Application deadline cannot be in the past.';
+                redirect_to('job/create');
+            }
+        } else {
+            $applicationDeadline = null;
         }
 
         $upload = $this->handleJobImageUpload($_FILES['image'] ?? null);
@@ -52,7 +73,8 @@ class JobController
             $salary,
             $location,
             $employerId,
-            $upload['path']
+            $upload['path'],
+            $applicationDeadline
         );
 
         if ($jobId <= 0) {

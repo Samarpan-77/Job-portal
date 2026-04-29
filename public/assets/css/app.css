@@ -113,6 +113,10 @@ body.page-dashboard main.container {
     padding: 1.4rem;
 }
 
+.captcha-wrap {
+    overflow-x: auto;
+}
+
 .password-field {
     position: relative;
 }

@@ -33,6 +33,12 @@
     </div>
 
     <div class="mb-3">
+        <label>Application Deadline</label>
+        <input type="date" name="application_deadline" class="form-control" min="<?= date('Y-m-d') ?>">
+        <div class="form-text">Optional. Employees can set the last day candidates are allowed to apply.</div>
+    </div>
+
+    <div class="mb-3">
         <label>Job Image</label>
         <input type="file" name="image" class="form-control" accept=".jpg,.jpeg,.png,.webp,.gif,image/*">
         <div class="form-text">Optional. JPG, PNG, WEBP, or GIF up to 5 MB.</div>

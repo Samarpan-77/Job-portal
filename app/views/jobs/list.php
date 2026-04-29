@@ -36,6 +36,7 @@
                 <th>Title</th>
                 <th>Location</th>
                 <th>Salary</th>
+                <th>Deadline</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -63,6 +64,16 @@
                     </td>
                     <td><?= htmlspecialchars($job['location']) ?></td>
                     <td><?= htmlspecialchars($job['salary']) ?></td>
+                    <td>
+                        <?php if (!empty($job['application_deadline'])): ?>
+                            <?= htmlspecialchars($job['application_deadline'], ENT_QUOTES, 'UTF-8') ?>
+                            <?php if ($job['application_deadline'] < date('Y-m-d')): ?>
+                                <div class="small text-danger">Closed</div>
+                            <?php endif; ?>
+                        <?php else: ?>
+                            <span class="text-muted small">No deadline</span>
+                        <?php endif; ?>
+                    </td>
                     <td>
                         <a href="<?= base_url('job/view/' . $job['id']) ?>" class="btn btn-sm btn-info">View</a>
                         <?php if (($_SESSION['role'] ?? '') === 'user'): ?>

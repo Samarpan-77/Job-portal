@@ -24,6 +24,7 @@ Seven-7 is a PHP + MySQL job portal built with a simple MVC structure.
 - MySQL (XAMPP)
 - Bootstrap 5
 - PHPMailer (SMTP)
+- OpenRouter (AI interview practice)
 
 ## Project Structure
 
@@ -68,7 +69,12 @@ public/
    ```powershell
    composer require phpmailer/phpmailer
    ```
-6. Copy `.env.example` values into `.env` for MailHog SMTP:
+6. Copy `.env.example` values into `.env` for Mailpit SMTP:
+   - `AI_PROVIDER=openrouter`
+   - `OPENROUTER_API_KEY=your_openrouter_api_key_here`
+   - `OPENROUTER_MODEL=~openai/gpt-mini-latest`
+   - `OPENROUTER_HTTP_REFERER=http://localhost/Seven-7/public/`
+   - `OPENROUTER_APP_NAME=Seven-7`
    - `MAIL_HOST=127.0.0.1`
    - `MAIL_PORT=1025`
    - `MAIL_USERNAME=`
@@ -86,15 +92,37 @@ public/
 8. Open app:
    - `http://localhost/Seven-7/public/`
 
-## MailHog (Local SMTP)
+## Mailpit (Local SMTP)
 
-- Start MailHog and keep it running while testing password reset emails.
-- Example with Docker:
+- Start Mailpit and keep it running while testing password reset emails.
+- Start it with Docker Compose from the project root:
   ```powershell
-  docker run -d -p 1025:1025 -p 8025:8025 mailhog/mailhog
+  docker compose -f docker-compose.mailpit.yml up -d
   ```
-- Open MailHog inbox UI:
+- Or run it directly with Docker:
+  ```powershell
+  docker run -d --name seven7-mailpit -p 1025:1025 -p 8025:8025 axllent/mailpit:latest
+  ```
+- Open the Mailpit inbox UI:
   - `http://localhost:8025`
+- SMTP connection for this app:
+  - Host: `127.0.0.1`
+  - Port: `1025`
+  - Encryption: `none`
+  - Auth: disabled
+
+## OpenRouter (AI Interview)
+
+- The AI interview feature is configured to use OpenRouter.
+- Default model:
+  - `~openai/gpt-mini-latest`
+- Required `.env` values:
+  - `AI_PROVIDER=openrouter`
+  - `OPENROUTER_API_KEY=your_openrouter_api_key_here`
+- Optional `.env` values:
+  - `OPENROUTER_MODEL=~openai/gpt-mini-latest`
+  - `OPENROUTER_HTTP_REFERER=http://localhost/Seven-7/public/`
+  - `OPENROUTER_APP_NAME=Seven-7`
 
 ## Reset Password Test
 

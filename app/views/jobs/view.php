@@ -4,6 +4,7 @@
 $canManageImage = isset($_SESSION['user_id'], $_SESSION['role']) &&
     ($_SESSION['role'] === 'employer') &&
     ((int)$job['employer_id'] === (int)$_SESSION['user_id']);
+$isDeadlinePassed = !empty($job['application_deadline']) && $job['application_deadline'] < date('Y-m-d');
 ?>
 
 <?php if (!empty($_SESSION['flash_success'])): ?>
@@ -34,6 +35,21 @@ $canManageImage = isset($_SESSION['user_id'], $_SESSION['role']) &&
 
 <p><strong>Location:</strong> <?= htmlspecialchars($job['location']) ?></p>
 <p><strong>Salary:</strong> <?= htmlspecialchars($job['salary']) ?></p>
+<p>
+    <strong>Posted On:</strong>
+    <?= !empty($job['created_at']) ? htmlspecialchars(date('F j, Y', strtotime((string)$job['created_at'])), ENT_QUOTES, 'UTF-8') : '<span class="text-muted">N/A</span>' ?>
+</p>
+<p>
+    <strong>Application Deadline:</strong>
+    <?php if (!empty($job['application_deadline'])): ?>
+        <?= htmlspecialchars($job['application_deadline'], ENT_QUOTES, 'UTF-8') ?>
+        <?php if ($isDeadlinePassed): ?>
+            <span class="text-danger">(Closed)</span>
+        <?php endif; ?>
+    <?php else: ?>
+        <span class="text-muted">No deadline set</span>
+    <?php endif; ?>
+</p>
 <p>
     <strong>Company:</strong>
     <a href="<?= base_url('profile/company/' . $job['employer_id']) ?>" class="job-company-link">
@@ -81,6 +97,8 @@ $canManageImage = isset($_SESSION['user_id'], $_SESSION['role']) &&
     <?php if (empty($resumes)): ?>
         <div class="alert alert-warning">Create a resume first before applying.</div>
         <a href="<?= base_url('resume/create') ?>" class="btn btn-primary btn-sm">Create Resume</a>
+    <?php elseif ($isDeadlinePassed): ?>
+        <div class="alert alert-warning">This vacancy is closed and no longer accepting applications.</div>
     <?php else: ?>
         <form method="POST" action="<?= base_url('application/apply') ?>">
         <input type="hidden" name="job_id" value="<?= $job['id'] ?>">

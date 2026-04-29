@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS jobs (
     salary VARCHAR(80) DEFAULT NULL,
     location VARCHAR(120) DEFAULT NULL,
     image_path VARCHAR(255) DEFAULT NULL,
+    application_deadline DATE DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_jobs_employer FOREIGN KEY (employer_id) REFERENCES users(id) ON DELETE CASCADE
 );

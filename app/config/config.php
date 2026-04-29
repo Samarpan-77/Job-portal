@@ -110,3 +110,70 @@ function verify_csrf()
         exit;
     }
 }
+
+function hcaptcha_site_key(): string
+{
+    return trim((string)(getenv('HCAPTCHA_SITE_KEY') ?: ''));
+}
+
+function hcaptcha_secret_key(): string
+{
+    return trim((string)(getenv('HCAPTCHA_SECRET_KEY') ?: ''));
+}
+
+function hcaptcha_is_enabled(): bool
+{
+    return hcaptcha_site_key() !== '' && hcaptcha_secret_key() !== '';
+}
+
+function verify_hcaptcha_response(string $token): bool
+{
+    if (!hcaptcha_is_enabled()) {
+        return true;
+    }
+
+    $token = trim($token);
+    if ($token === '') {
+        return false;
+    }
+
+    $payload = http_build_query([
+        'secret' => hcaptcha_secret_key(),
+        'response' => $token,
+        'remoteip' => $_SERVER['REMOTE_ADDR'] ?? '',
+    ]);
+
+    $responseBody = false;
+
+    if (function_exists('curl_init')) {
+        $ch = curl_init('https://hcaptcha.com/siteverify');
+        curl_setopt_array($ch, [
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => $payload,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 10,
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/x-www-form-urlencoded',
+            ],
+        ]);
+        $responseBody = curl_exec($ch);
+        curl_close($ch);
+    } else {
+        $context = stream_context_create([
+            'http' => [
+                'method' => 'POST',
+                'header' => "Content-Type: application/x-www-form-urlencoded\r\n",
+                'content' => $payload,
+                'timeout' => 10,
+            ],
+        ]);
+        $responseBody = @file_get_contents('https://hcaptcha.com/siteverify', false, $context);
+    }
+
+    if (!is_string($responseBody) || $responseBody === '') {
+        return false;
+    }
+
+    $decoded = json_decode($responseBody, true);
+    return is_array($decoded) && !empty($decoded['success']);
+}

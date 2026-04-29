@@ -6,8 +6,10 @@ $title = $metaTitle ?? 'Resume';
 $fullName = $resumeData['full_name'] ?? '';
 $headline = $resumeData['headline'] ?? '';
 $backPath = (($_SESSION['role'] ?? '') === 'employer') ? 'application/employerApplications' : 'resume';
+$templates = (isset($templates) && is_array($templates)) ? $templates : ResumeTemplateService::getAvailableTemplates();
 $currentTemplateId = $templateId ?? 'classic';
 $isOwner = !isset($readOnly) || ($readOnly && (int)$_SESSION['user_id'] === ($resumeOwnerId ?? 0));
+$canChangeTemplate = !$readOnly || $isOwner;
 ?>
 
 <h3><?= htmlspecialchars($title, ENT_QUOTES, 'UTF-8') ?></h3>
@@ -30,18 +32,26 @@ $isOwner = !isset($readOnly) || ($readOnly && (int)$_SESSION['user_id'] === ($re
     <div class="row align-items-center">
         <div class="col-md-8">
             <label class="form-label mb-0"><strong>Resume Template:</strong></label>
-            <div class="btn-group" role="group">
-                <?php foreach ($templates as $tId => $template): ?>
-                    <form method="POST" action="<?= base_url('resume/changeTemplate/' . ($resumeId ?? 0)) ?>" style="display: inline;" class="template-form">
-                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                        <input type="hidden" name="template_id" value="<?= $tId ?>">
-                        <button type="submit" class="btn btn-sm <?= ($currentTemplateId === $tId) ? 'btn-primary' : 'btn-outline-primary' ?>"
-                            title="<?= htmlspecialchars($template['description'], ENT_QUOTES, 'UTF-8') ?>">
-                            <?= htmlspecialchars($template['icon'], ENT_QUOTES, 'UTF-8') ?> <?= htmlspecialchars($template['name'], ENT_QUOTES, 'UTF-8') ?>
-                        </button>
-                    </form>
-                <?php endforeach; ?>
-            </div>
+            <?php if ($canChangeTemplate): ?>
+                <div class="btn-group" role="group">
+                    <?php foreach ($templates as $tId => $template): ?>
+                        <form method="POST" action="<?= base_url('resume/changeTemplate/' . ($resumeId ?? 0)) ?>" style="display: inline;" class="template-form">
+                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                            <input type="hidden" name="template_id" value="<?= $tId ?>">
+                            <button type="submit" class="btn btn-sm <?= ($currentTemplateId === $tId) ? 'btn-primary' : 'btn-outline-primary' ?>"
+                                title="<?= htmlspecialchars($template['description'], ENT_QUOTES, 'UTF-8') ?>">
+                                <?= htmlspecialchars($template['icon'], ENT_QUOTES, 'UTF-8') ?> <?= htmlspecialchars($template['name'], ENT_QUOTES, 'UTF-8') ?>
+                            </button>
+                        </form>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <?php $activeTemplate = $templates[$currentTemplateId] ?? ($templates['classic'] ?? null); ?>
+                <span class="badge bg-secondary">
+                    <?= htmlspecialchars((string)($activeTemplate['icon'] ?? ''), ENT_QUOTES, 'UTF-8') ?>
+                    <?= htmlspecialchars((string)($activeTemplate['name'] ?? 'Classic'), ENT_QUOTES, 'UTF-8') ?>
+                </span>
+            <?php endif; ?>
         </div>
         <div class="col-md-4 text-end">
             <a href="<?= base_url('resume/downloadPDF/' . ($resumeId ?? 0)) ?>" class="btn btn-outline-success btn-sm" title="Download as PDF">
