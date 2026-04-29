@@ -27,6 +27,7 @@ class ResumeController
     {
         $formData = [];
         $errorMessage = '';
+        $infoMessage = '';
         require BASE_PATH . '/app/views/resumes/create.php';
     }
 
@@ -39,6 +40,7 @@ class ResumeController
         verify_csrf();
 
         $formData = [
+            'linkedin_text' => trim((string)($_POST['linkedin_text'] ?? '')),
             'full_name' => trim((string)($_POST['full_name'] ?? '')),
             'headline' => trim((string)($_POST['headline'] ?? '')),
             'email' => trim((string)($_POST['email'] ?? '')),
@@ -51,6 +53,30 @@ class ResumeController
             'projects' => trim((string)($_POST['projects'] ?? '')),
             'certifications' => trim((string)($_POST['certifications'] ?? '')),
         ];
+
+        $action = trim((string)($_POST['action'] ?? 'save'));
+        $infoMessage = '';
+
+        if ($formData['linkedin_text'] !== '') {
+            $parsed = Resume::parseLinkedInText($formData['linkedin_text']);
+            $formData = array_merge($parsed, $formData);
+        }
+
+        if ($action === 'extract') {
+            if ($formData['linkedin_text'] === '') {
+                $errorMessage = 'Please paste LinkedIn profile text before extracting.';
+            } else {
+                $errorMessage = '';
+                $infoMessage = 'LinkedIn text extracted. Review the fields and click Save Resume when ready.';
+                $formData['skills'] = is_array($formData['skills']) ? implode(', ', $formData['skills']) : $formData['skills'];
+                $formData['education_items'] = is_array($formData['education_items']) ? implode("\n", $formData['education_items']) : $formData['education_items'];
+                $formData['experience_items'] = is_array($formData['experience_items']) ? implode("\n", $formData['experience_items']) : $formData['experience_items'];
+                $formData['projects'] = is_array($formData['projects']) ? implode("\n", $formData['projects']) : $formData['projects'];
+                $formData['certifications'] = is_array($formData['certifications']) ? implode("\n", $formData['certifications']) : $formData['certifications'];
+            }
+            require BASE_PATH . '/app/views/resumes/create.php';
+            return;
+        }
 
         $normalized = Resume::normalizeData($formData);
         if ($normalized['full_name'] === '') {

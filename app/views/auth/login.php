@@ -32,7 +32,7 @@
 
             <div class="mb-3">
                 <label class="form-label">Email</label>
-                <input type="email" name="email" class="form-control" required>
+                <input type="email" name="email" class="form-control" value="<?= htmlspecialchars((string)($_POST['email'] ?? ''), ENT_QUOTES, 'UTF-8') ?>" required>
             </div>
 
             <div class="mb-3">
@@ -48,6 +48,12 @@
                     >&#128065;</button>
                 </div>
             </div>
+
+            <?php if (hcaptcha_is_enabled()): ?>
+                <div class="mb-3 captcha-wrap">
+                    <div class="h-captcha" data-sitekey="<?= htmlspecialchars(hcaptcha_site_key(), ENT_QUOTES, 'UTF-8') ?>"></div>
+                </div>
+            <?php endif; ?>
 
             <button class="btn btn-primary">Login</button>
         </form>
@@ -76,5 +82,9 @@ document.addEventListener('click', function (event) {
     button.setAttribute('title', showPassword ? 'Hide password' : 'Show password');
 });
 </script>
+
+<?php if (hcaptcha_is_enabled()): ?>
+    <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+<?php endif; ?>
 
 <?php require_once BASE_PATH . '/app/views/layout/footer.php'; ?>

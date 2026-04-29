@@ -36,6 +36,26 @@ class ApplicationController
             $resume_id = (int)($_POST['resume_id'] ?? 0);
             $user_id = $_SESSION['user_id'];
 
+            $jobStmt = $this->db->prepare("
+                SELECT id, title, employer_id, application_deadline
+                FROM jobs
+                WHERE id = ?
+                LIMIT 1
+            ");
+            $jobStmt->execute([$job_id]);
+            $job = $jobStmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$job) {
+                $_SESSION['flash_error'] = 'Job not found.';
+                redirect_to('job');
+            }
+
+            $deadline = trim((string)($job['application_deadline'] ?? ''));
+            if ($deadline !== '' && $deadline < date('Y-m-d')) {
+                $_SESSION['flash_error'] = 'This vacancy is no longer accepting applications.';
+                redirect_to('job/view/' . $job_id);
+            }
+
             // Prevent duplicate application
             $check = $this->db->prepare("
                 SELECT id FROM applications 
@@ -51,15 +71,6 @@ class ApplicationController
                 $stmt->execute([$job_id, $user_id, $resume_id]);
 
                 $applicationId = (int)$this->db->lastInsertId();
-                $jobStmt = $this->db->prepare("
-                    SELECT title, employer_id
-                    FROM jobs
-                    WHERE id = ?
-                    LIMIT 1
-                ");
-                $jobStmt->execute([$job_id]);
-                $job = $jobStmt->fetch(PDO::FETCH_ASSOC);
-
                 if ($job) {
                     $title = trim((string)$job['title']);
                     Notification::create(
@@ -156,7 +167,7 @@ class ApplicationController
         }
 
         $resumeStmt = $this->db->prepare("
-            SELECT id, content_json, created_at
+            SELECT id, user_id, content_json, template_id, created_at
             FROM resumes
             WHERE id = ?
             LIMIT 1
@@ -170,6 +181,10 @@ class ApplicationController
         }
 
         $resumeData = Resume::decodeContent($resume['content_json'] ?? '');
+        $resumeId = (int)$resume['id'];
+        $resumeOwnerId = (int)$resume['user_id'];
+        $templateId = trim((string)($resume['template_id'] ?? 'classic'));
+        $templates = ResumeTemplateService::getAvailableTemplates();
         $readOnly = true;
         $metaTitle = 'Applicant Resume';
         require BASE_PATH . '/app/views/resumes/view.php';
@@ -269,9 +284,8 @@ class ApplicationController
         $userId = (int)$_SESSION['user_id'];
         $isAdmin = $role === 'admin';
         $isApplicant = ($role === 'user' && (int)$application['user_id'] === $userId);
-        $isOwnerEmployer = ($role === 'employer' && (int)$application['employer_id'] === $userId);
 
-        if (!$isAdmin && !$isApplicant && !$isOwnerEmployer) {
+        if (!$isAdmin && !$isApplicant) {
             require BASE_PATH . '/app/views/errors/unauthorized.php';
             exit;
         }
@@ -291,11 +305,11 @@ class ApplicationController
             redirect_to('application/myApplications');
         }
 
-        if ($isOwnerEmployer || $isAdmin) {
+        if ($isAdmin) {
             Notification::create(
                 (int)$application['user_id'],
                 'Application removed',
-                'Your application for "' . trim((string)$application['title']) . '" has been removed by the hiring team.',
+                'Your application for "' . trim((string)$application['title']) . '" has been removed by an administrator.',
                 'application',
                 $applicationId
             );

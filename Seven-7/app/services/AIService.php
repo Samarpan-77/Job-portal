@@ -10,7 +10,7 @@ class AIService
         $this->apiKey = $envKey ? trim($envKey) : '';
     }
 
-    public function evaluateAnswer($jobRole, $answer)
+    public function evaluateAnswer($jobRole, $answer, $question = '')
     {
         $jobRole = trim((string)$jobRole);
         $answer = trim((string)$answer);
@@ -27,7 +27,7 @@ class AIService
             return $this->localEvaluation($jobRole, $answer);
         }
 
-        $prompt = "You are an HR interviewer for {$jobRole}. Return strict JSON with keys feedback, score (0-10), improved_answer. Candidate answer: {$answer}";
+        $prompt = "You are an HR interviewer for {$jobRole}. Evaluate the candidate's answer to the question: '{$question}'. Return strict JSON with keys feedback, score (0-10), improved_answer. Candidate answer: {$answer}";
 
         $data = [
             'model' => 'gpt-4o-mini',
@@ -70,7 +70,7 @@ class AIService
         ];
     }
 
-    private function localEvaluation($jobRole, $answer)
+    private function localEvaluation($jobRole, $answer, $question = '')
     {
         $length = strlen($answer);
         $keywords = ['experience', 'project', 'team', 'result', 'improve', 'challenge'];

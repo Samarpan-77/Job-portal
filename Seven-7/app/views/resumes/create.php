@@ -7,9 +7,20 @@
         <?= htmlspecialchars($errorMessage, ENT_QUOTES, 'UTF-8') ?>
     </div>
 <?php endif; ?>
+<?php if (!empty($infoMessage)): ?>
+    <div class="alert alert-success" role="alert">
+        <?= htmlspecialchars($infoMessage, ENT_QUOTES, 'UTF-8') ?>
+    </div>
+<?php endif; ?>
 
 <form method="POST" action="<?= base_url('resume/store') ?>">
     <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+
+    <div class="mb-3">
+        <label>LinkedIn Profile Text</label>
+        <textarea name="linkedin_text" class="form-control" rows="6" placeholder="Paste your public LinkedIn profile text here, or copy the relevant profile sections from LinkedIn."><?= htmlspecialchars($formData['linkedin_text'] ?? '', ENT_QUOTES, 'UTF-8') ?></textarea>
+        <small class="form-text text-muted">Paste your profile text and click Extract to fill the fields automatically.</small>
+    </div>
 
     <div class="mb-3">
         <label>Full Name</label>
@@ -66,7 +77,10 @@
         <textarea name="certifications" class="form-control" rows="3" placeholder="AWS Cloud Practitioner"><?= htmlspecialchars($formData['certifications'] ?? '', ENT_QUOTES, 'UTF-8') ?></textarea>
     </div>
 
-    <button class="btn btn-primary">Save Resume</button>
+    <div class="d-flex gap-2">
+        <button type="submit" name="action" value="extract" class="btn btn-secondary">Extract from LinkedIn</button>
+        <button type="submit" name="action" value="save" class="btn btn-primary">Save Resume</button>
+    </div>
 </form>
 
 <a href="<?= base_url('resume') ?>" class="btn btn-link mt-2">Back to resumes</a>

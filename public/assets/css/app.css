@@ -25,6 +25,14 @@ body {
     font-family: "Trebuchet MS", "Segoe UI", Tahoma, sans-serif;
 }
 
+body.page-dashboard {
+    overflow: hidden;
+}
+
+body.page-dashboard main.container {
+    padding-bottom: 0;
+}
+
 .app-navbar {
     background: linear-gradient(90deg, #0f2747, #123c72);
     box-shadow: 0 6px 18px rgba(13, 35, 64, 0.35);
@@ -103,6 +111,10 @@ body {
 
 .auth-form-card {
     padding: 1.4rem;
+}
+
+.captcha-wrap {
+    overflow-x: auto;
 }
 
 .password-field {

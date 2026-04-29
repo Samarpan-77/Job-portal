@@ -105,6 +105,89 @@ class Resume
         ];
     }
 
+    public static function parseLinkedInText($text)
+    {
+        $text = trim((string)$text);
+        $lines = preg_split('/\r\n|\r|\n/', $text);
+        $sections = [
+            'header' => [],
+            'summary' => [],
+            'experience' => [],
+            'education' => [],
+            'skills' => [],
+            'projects' => [],
+            'certifications' => [],
+        ];
+
+        $currentSection = 'header';
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if ($line === '') {
+                continue;
+            }
+
+            if (preg_match('/^\s*(about|summary)\s*$/i', $line)) {
+                $currentSection = 'summary';
+                continue;
+            }
+            if (preg_match('/^\s*(experience|work experience|professional experience|employment)\s*$/i', $line)) {
+                $currentSection = 'experience';
+                continue;
+            }
+            if (preg_match('/^\s*(education|academic background|academics)\s*$/i', $line)) {
+                $currentSection = 'education';
+                continue;
+            }
+            if (preg_match('/^\s*(skills|skills & endorsements|expertise)\s*$/i', $line)) {
+                $currentSection = 'skills';
+                continue;
+            }
+            if (preg_match('/^\s*(projects|selected projects|portfolio)\s*$/i', $line)) {
+                $currentSection = 'projects';
+                continue;
+            }
+            if (preg_match('/^\s*(certifications|licenses|awards)\s*$/i', $line)) {
+                $currentSection = 'certifications';
+                continue;
+            }
+
+            $sections[$currentSection][] = $line;
+        }
+
+        $result = [];
+        $headerLines = array_values(array_filter($sections['header'], fn($value) => $value !== ''));
+        if (!empty($headerLines)) {
+            $result['full_name'] = trim($headerLines[0]);
+            if (isset($headerLines[1])) {
+                $result['headline'] = trim($headerLines[1]);
+            }
+        }
+
+        if (preg_match('/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/', $text, $emailMatch)) {
+            $result['email'] = $emailMatch[0];
+        }
+        if (preg_match('/\+?[0-9][0-9\s\-().]{6,}[0-9]/', $text, $phoneMatch)) {
+            $result['phone'] = preg_replace('/[^0-9+]/', '', $phoneMatch[0]);
+        }
+
+        if (!empty($sections['summary'])) {
+            $result['summary'] = implode(' ', $sections['summary']);
+        } else {
+            $fallbackSummary = array_filter($sections['header'], fn($line) => stripos($line, '@') === false && !preg_match('/\+?[0-9]/', $line));
+            if (count($fallbackSummary) > 2) {
+                $result['summary'] = implode(' ', array_slice($fallbackSummary, 2));
+            }
+        }
+
+        $result['skills'] = self::normalizeListField($sections['skills']);
+        $result['education_items'] = self::normalizeListField($sections['education']);
+        $result['experience_items'] = self::normalizeListField($sections['experience']);
+        $result['projects'] = self::normalizeListField($sections['projects']);
+        $result['certifications'] = self::normalizeListField($sections['certifications']);
+
+        return $result;
+    }
+
     private static function normalizeListField($value)
     {
         if (is_string($value)) {

@@ -54,11 +54,6 @@
                 <a href="<?= base_url('application/update/' . $app['id'] . '/shortlisted') ?>" class="btn btn-success btn-sm">Shortlist</a>
                 <a href="<?= base_url('application/update/' . $app['id'] . '/rejected') ?>" class="btn btn-danger btn-sm">Reject</a>
                 <a href="<?= base_url('application/update/' . $app['id'] . '/pending') ?>" class="btn btn-secondary btn-sm">Set Pending</a>
-                <a
-                    href="<?= base_url('application/delete/' . $app['id']) ?>"
-                    class="btn btn-outline-danger btn-sm"
-                    onclick="return confirm('Delete this application?');"
-                >Delete</a>
             </td>
         </tr>
     <?php endforeach; ?>

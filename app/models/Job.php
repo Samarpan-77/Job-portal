@@ -13,14 +13,14 @@ class Job
         return self::getAll();
     }
 
-    public static function create($title, $description, $salary, $location, $employer_id, $imagePath = null)
+    public static function create($title, $description, $salary, $location, $employer_id, $imagePath = null, $applicationDeadline = null)
     {
         $db = self::db();
         $stmt = $db->prepare("
-            INSERT INTO jobs (title,description,salary,location,employer_id,image_path)
-            VALUES (?,?,?,?,?,?)
+            INSERT INTO jobs (title,description,salary,location,employer_id,image_path,application_deadline)
+            VALUES (?,?,?,?,?,?,?)
         ");
-        $stmt->execute([$title, $description, $salary, $location, $employer_id, $imagePath]);
+        $stmt->execute([$title, $description, $salary, $location, $employer_id, $imagePath, $applicationDeadline]);
         return (int)$db->lastInsertId();
     }
 
@@ -33,6 +33,24 @@ class Job
             FROM jobs
             JOIN users ON jobs.employer_id = users.id
             ORDER BY created_at DESC
+        ")->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function getAllForUser()
+    {
+        $db = self::db();
+        return $db->query("
+            SELECT jobs.*, users.name AS employer, users.company_name,
+                   COALESCE(NULLIF(users.company_name, ''), users.name) AS employer_display_name
+            FROM jobs
+            JOIN users ON jobs.employer_id = users.id
+            ORDER BY
+                CASE
+                    WHEN jobs.application_deadline IS NULL THEN 1
+                    ELSE 0
+                END ASC,
+                jobs.application_deadline ASC,
+                jobs.created_at DESC
         ")->fetchAll(PDO::FETCH_ASSOC);
     }
 

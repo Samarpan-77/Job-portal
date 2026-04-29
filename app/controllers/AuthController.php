@@ -31,6 +31,7 @@ class AuthController
             $email = trim((string)($_POST['email'] ?? ''));
             $passwordPlain = (string)($_POST['password'] ?? '');
             $role = $_POST['role'] ?? 'user';
+            $hcaptchaToken = (string)($_POST['h-captcha-response'] ?? '');
 
             if (!in_array($role, ['user', 'employer'], true)) {
                 $role = 'user';
@@ -42,6 +43,8 @@ class AuthController
                 $errorMessage = 'Please enter a valid email address.';
             } elseif (strlen($passwordPlain) < 6) {
                 $errorMessage = 'Password must be at least 6 characters.';
+            } elseif (!verify_hcaptcha_response($hcaptchaToken)) {
+                $errorMessage = 'Please complete the hCaptcha challenge.';
             } elseif (User::findByEmail($email)) {
                 $errorMessage = 'An account with this email already exists.';
             } else {
@@ -69,11 +72,14 @@ class AuthController
 
             $email = trim((string)($_POST['email'] ?? ''));
             $password = (string)($_POST['password'] ?? '');
+            $hcaptchaToken = (string)($_POST['h-captcha-response'] ?? '');
             $user = User::findByEmail($email);
 
             $isValidPassword = false;
 
-            if ($user) {
+            if (!verify_hcaptcha_response($hcaptchaToken)) {
+                $errorMessage = 'Please complete the hCaptcha challenge.';
+            } elseif ($user) {
                 $storedPassword = (string)($user['password'] ?? '');
                 $passwordInfo = password_get_info($storedPassword);
 
@@ -89,14 +95,16 @@ class AuthController
                 }
             }
 
-            if ($user && $isValidPassword) {
+            if ($errorMessage === '' && $user && $isValidPassword) {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['role'] = $user['role'];
 
                 redirect_to('dashboard');
             }
 
-            $errorMessage = 'Invalid email or password.';
+            if ($errorMessage === '') {
+                $errorMessage = 'Invalid email or password.';
+            }
         }
 
         require BASE_PATH . '/app/views/auth/login.php';
