@@ -1,1 +1,0 @@
-[02-Mar-2026 15:30:49 Europe/Berlin] PHP Warning:  Undefined array key "REQUEST_METHOD" in C:\xampp\htdocs\Seven-7\app\controllers\AuthController.php on line 40
