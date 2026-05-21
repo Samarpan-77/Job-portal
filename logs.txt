@@ -1,0 +1,5 @@
+[30-Apr-2026 09:47:39 Europe/Berlin] DEBUG: action=extract, linkedin_text_length=1121
+[30-Apr-2026 09:48:29 Europe/Berlin] DEBUG: action=extract, linkedin_text_length=1146
+[30-Apr-2026 09:48:49 Europe/Berlin] DEBUG: action=save, linkedin_text_length=1146
+[30-Apr-2026 09:50:04 Europe/Berlin] DEBUG: action=extract, linkedin_text_length=1121
+[30-Apr-2026 09:50:08 Europe/Berlin] DEBUG: action=save, linkedin_text_length=1121

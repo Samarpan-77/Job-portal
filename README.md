@@ -28,6 +28,8 @@ Seven-7 is a PHP + MySQL job portal built with a simple MVC structure.
 
 ## Project Structure
 
+Canonical source root: the project uses the top-level `app/` directory.
+
 ```text
 app/
   config/
@@ -94,6 +96,7 @@ public/
 
 ## Mailpit (Local SMTP)
 
+- This project uses **Mailpit** for local SMTP testing (not MailHog).
 - Start Mailpit and keep it running while testing password reset emails.
 - Start it with Docker Compose from the project root:
   ```powershell
@@ -129,7 +132,7 @@ public/
 1. Open `http://localhost/Seven-7/public/forgot-password`
 2. Submit a registered email address
 3. Check inbox/spam for the reset email
-4. Open the reset link (expires in 2 minutes)
+4. Open the reset link (expires in 15 minutes)
 5. Set a new password and login at `http://localhost/Seven-7/public/login`
 
 ## Quick Health Checks
