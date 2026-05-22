@@ -24,22 +24,46 @@ class Job
         return (int)$db->lastInsertId();
     }
 
-    public static function getAll()
+    public static function getAll($searchQuery = '')
     {
         $db = self::db();
-        return $db->query("
+        $searchQuery = trim((string)$searchQuery);
+
+        if ($searchQuery === '') {
+            return $db->query("
             SELECT jobs.*, users.name AS employer, users.company_name,
                    COALESCE(NULLIF(users.company_name, ''), users.name) AS employer_display_name
             FROM jobs
             JOIN users ON jobs.employer_id = users.id
             ORDER BY created_at DESC
-        ")->fetchAll(PDO::FETCH_ASSOC);
+            ")->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        $term = '%' . $searchQuery . '%';
+        $stmt = $db->prepare("
+            SELECT jobs.*, users.name AS employer, users.company_name,
+                   COALESCE(NULLIF(users.company_name, ''), users.name) AS employer_display_name
+            FROM jobs
+            JOIN users ON jobs.employer_id = users.id
+            WHERE jobs.title LIKE ?
+               OR jobs.description LIKE ?
+               OR jobs.location LIKE ?
+               OR jobs.salary LIKE ?
+               OR users.name LIKE ?
+               OR users.company_name LIKE ?
+            ORDER BY created_at DESC
+        ");
+        $stmt->execute([$term, $term, $term, $term, $term, $term]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public static function getAllForUser()
+    public static function getAllForUser($searchQuery = '')
     {
         $db = self::db();
-        return $db->query("
+        $searchQuery = trim((string)$searchQuery);
+
+        if ($searchQuery === '') {
+            return $db->query("
             SELECT jobs.*, users.name AS employer, users.company_name,
                    COALESCE(NULLIF(users.company_name, ''), users.name) AS employer_display_name
             FROM jobs
@@ -51,7 +75,31 @@ class Job
                 END ASC,
                 jobs.application_deadline ASC,
                 jobs.created_at DESC
-        ")->fetchAll(PDO::FETCH_ASSOC);
+            ")->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        $term = '%' . $searchQuery . '%';
+        $stmt = $db->prepare("
+            SELECT jobs.*, users.name AS employer, users.company_name,
+                   COALESCE(NULLIF(users.company_name, ''), users.name) AS employer_display_name
+            FROM jobs
+            JOIN users ON jobs.employer_id = users.id
+            WHERE jobs.title LIKE ?
+               OR jobs.description LIKE ?
+               OR jobs.location LIKE ?
+               OR jobs.salary LIKE ?
+               OR users.name LIKE ?
+               OR users.company_name LIKE ?
+            ORDER BY
+                CASE
+                    WHEN jobs.application_deadline IS NULL THEN 1
+                    ELSE 0
+                END ASC,
+                jobs.application_deadline ASC,
+                jobs.created_at DESC
+        ");
+        $stmt->execute([$term, $term, $term, $term, $term, $term]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public static function findById($id)

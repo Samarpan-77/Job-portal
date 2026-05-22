@@ -47,19 +47,16 @@ class DashboardController
             return;
         }
 
-        $stmtUserApps = $this->db->prepare("SELECT COUNT(*) FROM applications WHERE user_id = ?");
-        $stmtUserApps->execute([$userId]);
-        $application_count = (int)$stmtUserApps->fetchColumn();
-
-        $stmtResumes = $this->db->prepare("SELECT COUNT(*) FROM resumes WHERE user_id = ?");
-        $stmtResumes->execute([$userId]);
-        $resume_count = (int)$stmtResumes->fetchColumn();
-
-        $stmtInterviews = $this->db->prepare("SELECT COUNT(*) FROM interview_sessions WHERE user_id = ?");
-        $stmtInterviews->execute([$userId]);
-        $interview_count = (int)$stmtInterviews->fetchColumn();
-
+        $jobs = Job::getAllForUser();
+        $recommendationService = new JobRecommendationService();
+        $recommendation = $recommendationService->getRecommendationsForUser($userId, 5);
+        $recommendedJobs = $recommendation['jobs'] ?? [];
+        $recommendationMessage = (string)($recommendation['message'] ?? '');
+        $stmtApplications = $this->db->prepare("SELECT COUNT(*) FROM applications WHERE user_id = ?");
+        $stmtApplications->execute([$userId]);
+        $application_count = (int)$stmtApplications->fetchColumn();
         $saved_job_count = SavedJob::countByUser($userId);
+        $savedJobs = SavedJob::getSavedJobIds($userId);
         $profile = User::getPublicProfileById($userId);
 
         require BASE_PATH . '/app/views/dashboard/user_dashboard.php';

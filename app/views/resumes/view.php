@@ -12,83 +12,59 @@ $isOwner = !isset($readOnly) || ($readOnly && (int)$_SESSION['user_id'] === ($re
 $canChangeTemplate = !$readOnly || $isOwner;
 ?>
 
-<h3><?= htmlspecialchars($title, ENT_QUOTES, 'UTF-8') ?></h3>
-
-<style>
-    @media print {
-
-        nav,
-        .btn,
-        .resume-actions,
-        .template-selector,
-        .alert {
-            display: none !important;
-        }
-    }
-</style>
-
-<!-- Template Selector -->
-<div class="template-selector mb-4 p-3 bg-light rounded">
-    <div class="row align-items-center">
-        <div class="col-md-8">
-            <label class="form-label mb-0"><strong>Resume Template:</strong></label>
-            <?php if ($canChangeTemplate): ?>
-                <div class="btn-group" role="group">
-                    <?php foreach ($templates as $tId => $template): ?>
-                        <form method="POST" action="<?= base_url('resume/changeTemplate/' . ($resumeId ?? 0)) ?>" style="display: inline;" class="template-form">
-                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                            <input type="hidden" name="template_id" value="<?= $tId ?>">
-                            <button type="submit" class="btn btn-sm <?= ($currentTemplateId === $tId) ? 'btn-primary' : 'btn-outline-primary' ?>"
-                                title="<?= htmlspecialchars($template['description'], ENT_QUOTES, 'UTF-8') ?>">
-                                <?= htmlspecialchars($template['icon'], ENT_QUOTES, 'UTF-8') ?> <?= htmlspecialchars($template['name'], ENT_QUOTES, 'UTF-8') ?>
-                            </button>
-                        </form>
-                    <?php endforeach; ?>
-                </div>
-            <?php else: ?>
-                <?php $activeTemplate = $templates[$currentTemplateId] ?? ($templates['classic'] ?? null); ?>
-                <span class="badge bg-secondary">
-                    <?= htmlspecialchars((string)($activeTemplate['icon'] ?? ''), ENT_QUOTES, 'UTF-8') ?>
-                    <?= htmlspecialchars((string)($activeTemplate['name'] ?? 'Classic'), ENT_QUOTES, 'UTF-8') ?>
-                </span>
-            <?php endif; ?>
-        </div>
-        <div class="col-md-4 text-end">
-            <a href="<?= base_url('resume/downloadPDF/' . ($resumeId ?? 0)) ?>" class="btn btn-outline-success btn-sm" title="Download as PDF">
-                📥 Download PDF
-            </a>
-            <button type="button" class="btn btn-outline-dark btn-sm" onclick="window.print()" title="Print to PDF">
-                🖨️ Print
-            </button>
+<section class="space-y-6">
+    <div class="rounded-[2rem] border border-slate-200 bg-white/85 p-8 shadow-soft backdrop-blur-sm">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+                <h3 class="text-3xl font-bold tracking-tight text-slate-950"><?= htmlspecialchars($title, ENT_QUOTES, 'UTF-8') ?></h3>
+            </div>
+            <div class="flex flex-wrap gap-3">
+                <a href="<?= base_url('resume/downloadPDF/' . ($resumeId ?? 0)) ?>" class="inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 transition hover:border-emerald-300 hover:bg-emerald-100" title="Download as PDF">📥 Download PDF</a>
+                <button type="button" class="inline-flex rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50" onclick="window.print()" title="Print to PDF">🖨️ Print</button>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Resume Content Using Selected Template -->
-<div class="resume-content mb-4">
-    <?= ResumeTemplateService::renderResume($resumeData, $currentTemplateId) ?>
-</div>
+    <div class="rounded-[2rem] border border-slate-200 bg-white/85 p-6 shadow-soft backdrop-blur-sm">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+                <label class="mb-2 block text-sm font-semibold text-slate-700"><strong>Resume Template:</strong></label>
+                <?php if ($canChangeTemplate): ?>
+                    <div class="flex flex-wrap gap-2">
+                        <?php foreach ($templates as $tId => $template): ?>
+                            <form method="POST" action="<?= base_url('resume/changeTemplate/' . ($resumeId ?? 0)) ?>" class="inline-flex">
+                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                                <input type="hidden" name="template_id" value="<?= $tId ?>">
+                                <button type="submit" class="rounded-full border px-4 py-2 text-sm font-semibold transition <?= ($currentTemplateId === $tId) ? 'border-sky-500 bg-sky-50 text-sky-700' : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50' ?>" title="<?= htmlspecialchars($template['description'], ENT_QUOTES, 'UTF-8') ?>">
+                                    <?= htmlspecialchars($template['icon'], ENT_QUOTES, 'UTF-8') ?> <?= htmlspecialchars($template['name'], ENT_QUOTES, 'UTF-8') ?>
+                                </button>
+                            </form>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else: ?>
+                    <?php $activeTemplate = $templates[$currentTemplateId] ?? ($templates['classic'] ?? null); ?>
+                    <span class="inline-flex rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700">
+                        <?= htmlspecialchars((string)($activeTemplate['icon'] ?? ''), ENT_QUOTES, 'UTF-8') ?>
+                        <?= htmlspecialchars((string)($activeTemplate['name'] ?? 'Classic'), ENT_QUOTES, 'UTF-8') ?>
+                    </span>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
 
-<!-- Resume Actions -->
-<div class="resume-actions mt-3">
-    <a href="<?= base_url($backPath) ?>" class="btn btn-link btn-sm">← Back</a>
-    <?php if (isset($readOnly) && !$readOnly): ?>
-        <a href="<?= base_url('resume/edit/' . ($resumeId ?? 0)) ?>" class="btn btn-warning btn-sm">Edit</a>
-        <a href="<?= base_url('resume/delete/' . ($resumeId ?? 0)) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
-    <?php endif; ?>
-</div>
+    <div class="overflow-hidden rounded-[2rem] border border-slate-200 bg-white/85 shadow-soft backdrop-blur-sm">
+        <div class="resume-content p-4">
+            <?= ResumeTemplateService::renderResume($resumeData, $currentTemplateId) ?>
+        </div>
+    </div>
 
-<style>
-    .template-form {
-        display: inline;
-    }
-
-    .resume-content {
-        background: white;
-        padding: 10px;
-        border-radius: 4px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
-</style>
+    <div class="flex flex-wrap gap-3">
+        <a href="<?= base_url($backPath) ?>" class="inline-flex text-sm font-semibold text-sky-700 hover:text-sky-600">← Back</a>
+        <?php if (isset($readOnly) && !$readOnly): ?>
+            <a href="<?= base_url('resume/edit/' . ($resumeId ?? 0)) ?>" class="inline-flex rounded-full border border-amber-200 bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-700 transition hover:border-amber-300 hover:bg-amber-100">Edit</a>
+            <a href="<?= base_url('resume/delete/' . ($resumeId ?? 0)) ?>" class="inline-flex rounded-full border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-700 transition hover:border-rose-300 hover:bg-rose-100" onclick="return confirm('Are you sure?')">Delete</a>
+        <?php endif; ?>
+    </div>
+</section>
 
 <?php require_once BASE_PATH . '/app/views/layout/footer.php'; ?>

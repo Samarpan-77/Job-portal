@@ -1,29 +1,31 @@
 <?php require_once BASE_PATH . '/app/views/layout/header.php'; ?>
 
-<section class="d-flex justify-content-between align-items-center mb-3">
-    <h3 class="mb-0">Notifications</h3>
-    <a href="<?= base_url('notification/readAll') ?>" class="btn btn-outline-primary btn-sm">Mark All as Read</a>
+<section class="mb-6 flex items-center justify-between gap-4">
+    <div>
+        <h3 class="text-3xl font-bold tracking-tight text-slate-950">Notifications</h3>
+    </div>
+    <a href="<?= base_url('notification/readAll') ?>" class="inline-flex rounded-full border border-sky-200 bg-sky-50 px-4 py-2 text-sm font-semibold text-sky-700 transition hover:border-sky-300 hover:bg-sky-100">Mark All as Read</a>
 </section>
 
 <?php if (!empty($_SESSION['flash_success'])): ?>
-    <div class="alert alert-success" role="alert">
+    <div class="mb-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800" role="alert">
         <?= htmlspecialchars($_SESSION['flash_success'], ENT_QUOTES, 'UTF-8') ?>
     </div>
     <?php unset($_SESSION['flash_success']); ?>
 <?php endif; ?>
 
 <?php if (empty($notifications)): ?>
-    <div class="alert alert-info">No notifications yet.</div>
+    <div class="rounded-2xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-800">No notifications yet.</div>
 <?php else: ?>
-    <div class="vstack gap-2">
+    <div class="space-y-3">
         <?php foreach ($notifications as $notification): ?>
-            <article class="glass-card p-3 <?= ((int)$notification['is_read'] === 0) ? 'border-primary' : '' ?>">
-                <div class="d-flex justify-content-between align-items-start gap-3">
+            <article class="rounded-[2rem] border <?= ((int)$notification['is_read'] === 0) ? 'border-sky-300 bg-sky-50/90' : 'border-slate-200 bg-white/85' ?> p-5 shadow-soft backdrop-blur-sm">
+                <div class="flex items-start justify-between gap-4">
                     <div>
-                        <h6 class="mb-1"><?= htmlspecialchars($notification['title'], ENT_QUOTES, 'UTF-8') ?></h6>
-                        <p class="mb-1 text-muted"><?= htmlspecialchars($notification['message'], ENT_QUOTES, 'UTF-8') ?></p>
+                        <h6 class="text-base font-semibold text-slate-950"><?= htmlspecialchars($notification['title'], ENT_QUOTES, 'UTF-8') ?></h6>
+                        <p class="mt-2 text-sm leading-7 text-slate-600"><?= htmlspecialchars($notification['message'], ENT_QUOTES, 'UTF-8') ?></p>
                     </div>
-                    <small class="text-muted text-nowrap"><?= htmlspecialchars($notification['created_at'], ENT_QUOTES, 'UTF-8') ?></small>
+                    <small class="whitespace-nowrap text-xs text-slate-400"><?= htmlspecialchars($notification['created_at'], ENT_QUOTES, 'UTF-8') ?></small>
                 </div>
             </article>
         <?php endforeach; ?>

@@ -1,52 +1,54 @@
 <?php require_once BASE_PATH . '/app/views/layout/header.php'; ?>
 
-<h3>Create Job</h3>
+<section class="mx-auto max-w-3xl rounded-[2rem] border border-slate-200 bg-white/85 p-8 shadow-soft backdrop-blur-sm">
+    <h3 class="text-2xl font-bold tracking-tight text-slate-950">Create Job</h3>
 
-<?php if (!empty($_SESSION['flash_error'])): ?>
-    <div class="alert alert-danger" role="alert">
-        <?= htmlspecialchars($_SESSION['flash_error'], ENT_QUOTES, 'UTF-8') ?>
-    </div>
-    <?php unset($_SESSION['flash_error']); ?>
-<?php endif; ?>
+    <?php if (!empty($_SESSION['flash_error'])): ?>
+        <div class="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700" role="alert">
+            <?= htmlspecialchars($_SESSION['flash_error'], ENT_QUOTES, 'UTF-8') ?>
+        </div>
+        <?php unset($_SESSION['flash_error']); ?>
+    <?php endif; ?>
 
-<form method="POST" action="<?= base_url('job/store') ?>" enctype="multipart/form-data">
-    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+    <form method="POST" action="<?= base_url('job/store') ?>" enctype="multipart/form-data" class="mt-6 space-y-5">
+        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
 
-    <div class="mb-3">
-        <label>Title</label>
-        <input type="text" name="title" class="form-control" required>
-    </div>
+        <div>
+            <label class="mb-2 block text-sm font-semibold text-slate-700">Title</label>
+            <input type="text" name="title" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100" required>
+        </div>
 
-    <div class="mb-3">
-        <label>Description</label>
-        <textarea name="description" class="form-control" required></textarea>
-    </div>
+        <div>
+            <label class="mb-2 block text-sm font-semibold text-slate-700">Description</label>
+            <textarea name="description" class="min-h-40 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100" required></textarea>
+        </div>
 
-    <div class="mb-3">
-        <label>Salary</label>
-        <input type="text" name="salary" class="form-control">
-    </div>
+        <div>
+            <label class="mb-2 block text-sm font-semibold text-slate-700">Salary</label>
+            <input type="text" name="salary" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100">
+        </div>
 
-    <div class="mb-3">
-        <label>Location</label>
-        <input type="text" name="location" class="form-control">
-    </div>
+        <div>
+            <label class="mb-2 block text-sm font-semibold text-slate-700">Location</label>
+            <input type="text" name="location" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100">
+        </div>
 
-    <div class="mb-3">
-        <label>Application Deadline</label>
-        <input type="date" name="application_deadline" class="form-control" min="<?= date('Y-m-d') ?>">
-        <div class="form-text">Optional. Employees can set the last day candidates are allowed to apply.</div>
-    </div>
+        <div>
+            <label class="mb-2 block text-sm font-semibold text-slate-700">Application Deadline</label>
+            <input type="date" name="application_deadline" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100" min="<?= date('Y-m-d') ?>">
+            <div class="mt-2 text-sm text-slate-500">Optional. Employees can set the last day candidates are allowed to apply.</div>
+        </div>
 
-    <div class="mb-3">
-        <label>Job Image</label>
-        <input type="file" name="image" class="form-control" accept=".jpg,.jpeg,.png,.webp,.gif,image/*">
-        <div class="form-text">Optional. JPG, PNG, WEBP, or GIF up to 5 MB.</div>
-    </div>
+        <div>
+            <label class="mb-2 block text-sm font-semibold text-slate-700">Job Image</label>
+            <input type="file" name="image" class="block w-full rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-700 file:mr-4 file:rounded-full file:border-0 file:bg-sky-600 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-sky-500" accept=".jpg,.jpeg,.png,.webp,.gif,image/*">
+            <div class="mt-2 text-sm text-slate-500">Optional. JPG, PNG, WEBP, or GIF up to 5 MB.</div>
+        </div>
 
-    <button class="btn btn-success">Post Job</button>
-</form>
+        <button class="inline-flex items-center justify-center rounded-2xl bg-emerald-600 px-5 py-3 font-semibold text-white transition hover:bg-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-200">Post Job</button>
+    </form>
 
-<a href="<?= base_url('job') ?>" class="btn btn-link mt-2">Back to jobs</a>
+    <a href="<?= base_url('job') ?>" class="mt-5 inline-flex text-sm font-semibold text-sky-700 hover:text-sky-600">Back to jobs</a>
+</section>
 
 <?php require_once BASE_PATH . '/app/views/layout/footer.php'; ?>
