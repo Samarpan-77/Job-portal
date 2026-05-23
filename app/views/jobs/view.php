@@ -126,7 +126,7 @@ $isDeadlinePassed = !empty($job['application_deadline']) && $job['application_de
         <?php endif; ?>
     <?php endif; ?>
 
-    <a href="<?= base_url('job') ?>" class="inline-flex text-sm font-semibold text-sky-700 hover:text-sky-600">Back to jobs</a>
+    <a href="<?= base_url('job') ?>" class="inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50">Back to jobs</a>
 </section>
 
 <?php require_once BASE_PATH . '/app/views/layout/footer.php'; ?>

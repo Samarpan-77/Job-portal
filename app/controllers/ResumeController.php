@@ -17,6 +17,19 @@ class ResumeController
             require BASE_PATH . '/app/views/errors/unauthorized.php';
             exit;
         }
+
+        if (($_SESSION['role'] ?? '') !== 'user') {
+            $_SESSION['flash_error'] = 'Resume tools are available to user accounts only.';
+            redirect_to('dashboard');
+        }
+    }
+
+    private function requireUserAccount(): void
+    {
+        if (($_SESSION['role'] ?? '') !== 'user') {
+            $_SESSION['flash_error'] = 'Resume tools are available to user accounts only.';
+            redirect_to('dashboard');
+        }
     }
 
     private function getCurrentProfile(): array
@@ -46,6 +59,7 @@ class ResumeController
 
     public function create()
     {
+        $this->requireUserAccount();
         $profile = $this->getCurrentProfile();
         $formData = $this->applyProfileDefaults([], $profile);
         $errorMessage = '';
@@ -57,6 +71,7 @@ class ResumeController
 
     public function store()
     {
+        $this->requireUserAccount();
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             redirect_to('resume/create');
         }
@@ -141,6 +156,7 @@ class ResumeController
     // View My Resumes
     public function list()
     {
+        $this->requireUserAccount();
         $profile = $this->getCurrentProfile();
 
         $stmt = $this->db->prepare("
@@ -163,6 +179,7 @@ class ResumeController
     // Delete Resume
     public function delete($id = null)
     {
+        $this->requireUserAccount();
         $resumeId = (int)$id;
         if ($resumeId > 0) {
             $stmt = $this->db->prepare("
@@ -177,6 +194,7 @@ class ResumeController
     // Change Resume Template
     public function changeTemplate($id = null)
     {
+        $this->requireUserAccount();
         $resumeId = (int)$id;
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             redirect_to('resume');
@@ -195,6 +213,7 @@ class ResumeController
     // View Resume (Decode JSON)
     public function view($id = null)
     {
+        $this->requireUserAccount();
         $resumeId = (int)$id;
         if ($resumeId <= 0) {
             require BASE_PATH . '/app/views/errors/404.php';
@@ -218,6 +237,7 @@ class ResumeController
     // Download Resume as PDF
     public function downloadPDF($id = null)
     {
+        $this->requireUserAccount();
         $resumeId = (int)$id;
         if ($resumeId <= 0) {
             redirect_to('resume');

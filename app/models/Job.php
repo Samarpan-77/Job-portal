@@ -141,6 +141,7 @@ class Job
             FROM jobs
             JOIN users ON jobs.employer_id = users.id
             WHERE employer_id=?
+            ORDER BY created_at DESC
         ");
         $stmt->execute([$employer_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

@@ -23,6 +23,7 @@ class DashboardController
             $job_count = (int)$this->db->query("SELECT COUNT(*) FROM jobs")->fetchColumn();
             $application_count = (int)$this->db->query("SELECT COUNT(*) FROM applications")->fetchColumn();
             $interview_count = (int)$this->db->query("SELECT COUNT(*) FROM interview_sessions")->fetchColumn();
+            $jobs = Job::getAllForUser();
             require BASE_PATH . '/app/views/dashboard/admin_dashboard.php';
             return;
         }
@@ -42,6 +43,7 @@ class DashboardController
             $application_count = (int)$stmtApps->fetchColumn();
 
             $profile = User::getPublicProfileById($userId);
+            $jobs = Job::getByEmployer($userId);
 
             require BASE_PATH . '/app/views/dashboard/employer_dashboard.php';
             return;

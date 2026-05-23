@@ -48,7 +48,7 @@
         <button class="inline-flex items-center justify-center rounded-2xl bg-emerald-600 px-5 py-3 font-semibold text-white transition hover:bg-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-200">Post Job</button>
     </form>
 
-    <a href="<?= base_url('job') ?>" class="mt-5 inline-flex text-sm font-semibold text-sky-700 hover:text-sky-600">Back to jobs</a>
+    <a href="<?= base_url('job') ?>" class="mt-5 inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50">Back to jobs</a>
 </section>
 
 <?php require_once BASE_PATH . '/app/views/layout/footer.php'; ?>

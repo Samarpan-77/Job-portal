@@ -39,7 +39,7 @@
             </form>
         <?php endif; ?>
 
-        <p class="mt-5 mb-0 text-sm text-slate-600"><a class="font-semibold text-sky-700 hover:text-sky-600" href="<?= base_url('login') ?>">Back to login</a></p>
+        <p class="mt-5 mb-0 text-sm text-slate-600"><a class="inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 font-semibold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50" href="<?= base_url('login') ?>">Back to login</a></p>
     </div>
 </section>
 

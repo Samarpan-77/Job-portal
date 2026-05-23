@@ -105,7 +105,7 @@
         </div>
     </form>
 
-    <a href="<?= base_url('resume') ?>" class="inline-flex text-sm font-semibold text-sky-700 hover:text-sky-600">Back to resumes</a>
+    <a href="<?= base_url('resume') ?>" class="inline-flex items-center rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50">Back to resumes</a>
 </section>
 
 <script>

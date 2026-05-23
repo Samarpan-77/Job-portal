@@ -60,6 +60,7 @@
     <?php else: ?>
         <a href="<?= base_url('profile/view/' . $profile['id']) ?>" class="inline-flex rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50">View Public Profile</a>
     <?php endif; ?>
+    <a href="<?= base_url('logout') ?>" class="inline-flex rounded-full border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-700 transition hover:border-rose-300 hover:bg-rose-100">Log Out</a>
 </div>
 
 <?php require_once BASE_PATH . '/app/views/layout/footer.php'; ?>

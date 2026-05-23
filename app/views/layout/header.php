@@ -19,6 +19,7 @@ $isSavedActive = str_starts_with($currentPath, 'job/saved');
 $isNotificationsActive = str_starts_with($currentPath, 'notification');
 $isAdminActive = str_starts_with($currentPath, 'admin');
 $isLoginActive = str_starts_with($currentPath, 'login');
+$hideHeaderSearch = in_array($firstSegment, ['login', 'register', 'forgot-password', 'reset-password'], true);
 ?>
 
 <!DOCTYPE html>
@@ -89,20 +90,22 @@ $isLoginActive = str_starts_with($currentPath, 'login');
                         <?php endif; ?>
                     </ul>
 
-                    <form class="relative w-full flex-1 lg:max-w-[25rem]" action="<?= base_url('job') ?>" method="GET">
-                        <label class="sr-only" for="headerSearchInput">Search</label>
-                        <svg aria-hidden="true" viewBox="0 0 24 24" class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-                            <circle cx="11" cy="11" r="7"></circle>
-                            <path d="M20 20l-3.25-3.25"></path>
-                        </svg>
-                        <input
-                            id="headerSearchInput"
-                            name="q"
-                            type="search"
-                            value="<?= htmlspecialchars($headerSearchQuery, ENT_QUOTES, 'UTF-8') ?>"
-                            placeholder="Search jobs, locations, or companies"
-                            class="w-full rounded-2xl border border-white/10 bg-[#273041] py-3 pl-11 pr-4 text-sm text-slate-100 outline-none transition placeholder:text-slate-400 focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20">
-                    </form>
+                    <?php if (!$hideHeaderSearch): ?>
+                        <form class="relative w-full flex-1 lg:max-w-[25rem]" action="<?= base_url('job') ?>" method="GET">
+                            <label class="sr-only" for="headerSearchInput">Search</label>
+                            <svg aria-hidden="true" viewBox="0 0 24 24" class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                                <circle cx="11" cy="11" r="7"></circle>
+                                <path d="M20 20l-3.25-3.25"></path>
+                            </svg>
+                            <input
+                                id="headerSearchInput"
+                                name="q"
+                                type="search"
+                                value="<?= htmlspecialchars($headerSearchQuery, ENT_QUOTES, 'UTF-8') ?>"
+                                placeholder="Search jobs, locations, or companies"
+                                class="w-full rounded-2xl border border-white/10 bg-[#273041] py-3 pl-11 pr-4 text-sm text-slate-100 outline-none transition placeholder:text-slate-400 focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20">
+                        </form>
+                    <?php endif; ?>
 
                     <div class="flex items-center gap-4 lg:ml-1">
                         <?php if ($isLoggedIn): ?>
