@@ -31,7 +31,7 @@ class AIService
             : trim((string)(getenv('OPENAI_MODEL') ?: self::OPENAI_MODEL));
         $this->baseUrl = $this->provider === 'openrouter' ? self::OPENROUTER_URL : self::OPENAI_URL;
         $this->httpReferer = trim((string)(getenv('OPENROUTER_HTTP_REFERER') ?: base_url('')));
-        $this->appName = trim((string)(getenv('OPENROUTER_APP_NAME') ?: 'Seven-7'));
+        $this->appName = trim((string)(getenv('OPENROUTER_APP_NAME') ?: 'Job Portal'));
     }
 
     public function startHrInterview($jobRole, $maxQuestions = 5)
@@ -169,7 +169,7 @@ class AIService
         $ch = curl_init($this->baseUrl);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_USERAGENT, 'Seven-7 AI Interview Client');
+        curl_setopt($ch, CURLOPT_USERAGENT, 'Job Portal AI Interview Client');
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         curl_setopt($ch, CURLOPT_TIMEOUT, 20);

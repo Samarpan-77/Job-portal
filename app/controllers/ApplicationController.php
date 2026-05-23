@@ -199,11 +199,16 @@ class ApplicationController
             exit;
         }
 
-        $allowed = ['shortlisted', 'rejected', 'pending'];
+        $allowed = ['shortlisted', 'rejected'];
         $applicationId = (int)$applicationId;
         $status = strtolower((string)$status);
 
-        if ($applicationId > 0 && in_array($status, $allowed, true)) {
+        if ($applicationId <= 0 || !in_array($status, $allowed, true)) {
+            $_SESSION['flash_error'] = 'Invalid application status update.';
+            redirect_to('application/employerApplications');
+        }
+
+        if ($applicationId > 0) {
             $detailStmt = $this->db->prepare("
                 SELECT a.id, a.user_id, a.status AS current_status, j.title, j.employer_id
                 FROM applications a

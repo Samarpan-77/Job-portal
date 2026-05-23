@@ -17,6 +17,38 @@ class ResumeController
             require BASE_PATH . '/app/views/errors/unauthorized.php';
             exit;
         }
+
+        if (($_SESSION['role'] ?? '') !== 'user') {
+            $_SESSION['flash_error'] = 'Resume tools are available to user accounts only.';
+            redirect_to('dashboard');
+        }
+    }
+
+    private function requireUserAccount(): void
+    {
+        if (($_SESSION['role'] ?? '') !== 'user') {
+            $_SESSION['flash_error'] = 'Resume tools are available to user accounts only.';
+            redirect_to('dashboard');
+        }
+    }
+
+    private function getCurrentProfile(): array
+    {
+        $profile = User::getPublicProfileById((int)$_SESSION['user_id']);
+        return is_array($profile) ? $profile : [];
+    }
+
+    private function applyProfileDefaults(array $data, array $profile = []): array
+    {
+        if (trim((string)($data['full_name'] ?? '')) === '') {
+            $data['full_name'] = trim((string)($profile['name'] ?? ''));
+        }
+
+        if (trim((string)($data['headline'] ?? '')) === '') {
+            $data['headline'] = trim((string)($profile['headline'] ?? ''));
+        }
+
+        return $data;
     }
 
     // Create Resume (Stored as JSON)
@@ -27,7 +59,9 @@ class ResumeController
 
     public function create()
     {
-        $formData = [];
+        $this->requireUserAccount();
+        $profile = $this->getCurrentProfile();
+        $formData = $this->applyProfileDefaults([], $profile);
         $errorMessage = '';
         $infoMessage = '';
         $templates = ResumeTemplateService::getAvailableTemplates();
@@ -37,6 +71,7 @@ class ResumeController
 
     public function store()
     {
+        $this->requireUserAccount();
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             redirect_to('resume/create');
         }
@@ -61,6 +96,7 @@ class ResumeController
         $templateId = trim((string)($_POST['template_id'] ?? 'classic'));
         $action = trim((string)($_POST['action'] ?? 'save'));
         $infoMessage = '';
+        $profile = $this->getCurrentProfile();
 
         // Debug logging
         error_log('DEBUG: action=' . $action . ', linkedin_text_length=' . strlen($formData['linkedin_text']));
@@ -76,7 +112,7 @@ class ResumeController
 
         if ($action === 'extract') {
             if ($formData['linkedin_text'] === '') {
-                $errorMessage = 'Please paste LinkedIn profile text before extracting.';
+                $errorMessage = 'Please paste LinkedIn profile text before extracting.'; 
             } else {
                 $errorMessage = '';
                 $infoMessage = 'LinkedIn text extracted. Review the fields and click Save Resume when ready.';
@@ -86,15 +122,18 @@ class ResumeController
                 $formData['projects'] = is_array($formData['projects']) ? implode("\n", $formData['projects']) : $formData['projects'];
                 $formData['certifications'] = is_array($formData['certifications']) ? implode("\n", $formData['certifications']) : $formData['certifications'];
             }
+            $formData = $this->applyProfileDefaults($formData, $profile);
             $templates = ResumeTemplateService::getAvailableTemplates();
             $selectedTemplate = $templateId;
             require BASE_PATH . '/app/views/resumes/create.php';
             return;
         }
 
+        $formData = $this->applyProfileDefaults($formData, $profile);
         $normalized = Resume::normalizeData($formData);
         if ($normalized['full_name'] === '') {
             $errorMessage = 'Full name is required.';
+            $formData = $this->applyProfileDefaults($formData, $profile);
             $templates = ResumeTemplateService::getAvailableTemplates();
             $selectedTemplate = $templateId;
             require BASE_PATH . '/app/views/resumes/create.php';
@@ -103,6 +142,7 @@ class ResumeController
 
         if ($normalized['email'] !== '' && !filter_var($normalized['email'], FILTER_VALIDATE_EMAIL)) {
             $errorMessage = 'Please enter a valid email address.';
+            $formData = $this->applyProfileDefaults($formData, $profile);
             $templates = ResumeTemplateService::getAvailableTemplates();
             $selectedTemplate = $templateId;
             require BASE_PATH . '/app/views/resumes/create.php';
@@ -116,6 +156,8 @@ class ResumeController
     // View My Resumes
     public function list()
     {
+        $this->requireUserAccount();
+        $profile = $this->getCurrentProfile();
 
         $stmt = $this->db->prepare("
             SELECT * FROM resumes WHERE user_id=?
@@ -125,12 +167,19 @@ class ResumeController
         $stmt->execute([$_SESSION['user_id']]);
         $resumes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        foreach ($resumes as &$resume) {
+            $content = Resume::decodeContent($resume['content_json'] ?? '');
+            $resume['parsed_content'] = $this->applyProfileDefaults($content, $profile);
+        }
+        unset($resume);
+
         require BASE_PATH . '/app/views/resumes/list.php';
     }
 
     // Delete Resume
     public function delete($id = null)
     {
+        $this->requireUserAccount();
         $resumeId = (int)$id;
         if ($resumeId > 0) {
             $stmt = $this->db->prepare("
@@ -145,6 +194,7 @@ class ResumeController
     // Change Resume Template
     public function changeTemplate($id = null)
     {
+        $this->requireUserAccount();
         $resumeId = (int)$id;
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             redirect_to('resume');
@@ -163,6 +213,7 @@ class ResumeController
     // View Resume (Decode JSON)
     public function view($id = null)
     {
+        $this->requireUserAccount();
         $resumeId = (int)$id;
         if ($resumeId <= 0) {
             require BASE_PATH . '/app/views/errors/404.php';
@@ -175,7 +226,7 @@ class ResumeController
             return;
         }
 
-        $resumeData = $resume['parsed_content'];
+        $resumeData = $this->applyProfileDefaults($resume['parsed_content'], $this->getCurrentProfile());
         $templateId = $resume['template_id'] ?? 'classic';
         $templates = ResumeTemplateService::getAvailableTemplates();
         $readOnly = true;
@@ -186,6 +237,7 @@ class ResumeController
     // Download Resume as PDF
     public function downloadPDF($id = null)
     {
+        $this->requireUserAccount();
         $resumeId = (int)$id;
         if ($resumeId <= 0) {
             redirect_to('resume');
@@ -198,7 +250,7 @@ class ResumeController
             return;
         }
 
-        $resumeData = $resume['parsed_content'];
+        $resumeData = $this->applyProfileDefaults($resume['parsed_content'], $this->getCurrentProfile());
         $templateId = $resume['template_id'] ?? 'classic';
         $fullName = $resumeData['full_name'] ?? 'Resume';
 

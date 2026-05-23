@@ -43,8 +43,7 @@ class MailService
         string $toName,
         string $resetLink,
         int $expiresInSeconds = 900
-    ): bool
-    {
+    ): bool {
         if (!self::loadMailer()) {
             error_log('PHPMailer is not installed. Run: composer require phpmailer/phpmailer');
             return false;
@@ -57,7 +56,7 @@ class MailService
         $mailEncryption = strtolower((string)(getenv('MAIL_ENCRYPTION') ?: 'none'));
         $mailSmtpAuth = filter_var((string)(getenv('MAIL_SMTP_AUTH') ?: '0'), FILTER_VALIDATE_BOOLEAN);
         $mailFromAddress = (string)(getenv('MAIL_FROM_ADDRESS') ?: $mailUsername);
-        $mailFromName = (string)(getenv('MAIL_FROM_NAME') ?: 'Seven-7');
+        $mailFromName = (string)(getenv('MAIL_FROM_NAME') ?: 'Job Portal');
 
         if ($mailHost === '' || $mailFromAddress === '') {
             error_log('SMTP is not configured. Please set MAIL_* values in .env');

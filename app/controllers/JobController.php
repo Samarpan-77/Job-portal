@@ -9,7 +9,8 @@ class JobController
     public function index()
     {
         $isUser = (($_SESSION['role'] ?? '') === 'user');
-        $jobs = $isUser ? Job::getAllForUser() : Job::getAll();
+        $searchQuery = trim((string)($_GET['q'] ?? ''));
+        $jobs = $isUser ? Job::getAllForUser($searchQuery) : Job::getAll($searchQuery);
         $savedJobs = $this->getSavedJobMap();
         require BASE_PATH . '/app/views/jobs/list.php';
     }
