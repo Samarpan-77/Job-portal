@@ -1,6 +1,6 @@
 # (AI Job Portal)
 
-Seven-7 is a PHP + MySQL job portal built with a simple MVC structure.
+Job portal is a PHP + MySQL job portal built with a simple MVC structure.
 
 ## Features
 
