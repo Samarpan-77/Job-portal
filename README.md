@@ -1,4 +1,4 @@
-# Seven-7 (AI Job Portal)
+# (AI Job Portal)
 
 Seven-7 is a PHP + MySQL job portal built with a simple MVC structure.
 
