@@ -1,61 +1,59 @@
 <?php require_once BASE_PATH . '/app/views/layout/header.php'; ?>
 <?php $feedJobs = $jobs ?? []; ?>
 
-<section class="relative overflow-hidden rounded-[2rem] border border-slate-200 bg-slate-950 p-8 text-white shadow-soft lg:p-10">
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(34,211,238,0.18),_transparent_30%),radial-gradient(circle_at_bottom_left,_rgba(14,165,233,0.16),_transparent_26%)]" style="
-    background-color: #1aa3d2;
-"></div>
+<section class="relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-8 text-slate-900 shadow-soft lg:p-10">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(148,163,184,0.18),_transparent_30%),radial-gradient(circle_at_bottom_left,_rgba(226,232,240,0.7),_transparent_26%)]"></div>
     <div class="relative grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
         <div>
             <h3 class="text-3xl font-bold tracking-tight">Admin Dashboard</h3>
-            <p class="mt-4 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">Get high-level visibility into users, jobs, applications, and interview activity.</p>
+            <p class="mt-4 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">Get high-level visibility into users, jobs, applications, and interview activity.</p>
         </div>
-        <img class="h-64 w-full rounded-3xl object-contain bg-white/95 p-6 shadow-xl shadow-sky-950/30" src="<?= base_url('../images/logo.png') ?>" alt="Admin overview">
+        <img class="h-64 w-full rounded-3xl object-contain bg-white/95 p-6 shadow-xl shadow-slate-100" src="<?= base_url('../images/logo.png') ?>" alt="Admin overview">
     </div>
 </section>
 
 <div class="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-    <div class="rounded-[2rem] border border-slate-200 bg-white/85 p-6 shadow-soft backdrop-blur-sm">
+    <div class="rounded-[2rem] border border-slate-200 bg-white/90 p-6 shadow-soft backdrop-blur-sm">
         <h5 class="text-base font-semibold text-slate-600">Total Users</h5>
-        <p class="mt-4 text-4xl font-bold tracking-tight text-slate-950"><?= $user_count ?></p>
+        <p class="mt-4 text-4xl font-bold tracking-tight text-slate-900"><?= $user_count ?></p>
     </div>
 
-    <div class="rounded-[2rem] border border-slate-200 bg-white/85 p-6 shadow-soft backdrop-blur-sm">
+    <div class="rounded-[2rem] border border-slate-200 bg-white/90 p-6 shadow-soft backdrop-blur-sm">
         <h5 class="text-base font-semibold text-slate-600">Total Jobs</h5>
-        <p class="mt-4 text-4xl font-bold tracking-tight text-slate-950"><?= $job_count ?></p>
+        <p class="mt-4 text-4xl font-bold tracking-tight text-slate-900"><?= $job_count ?></p>
     </div>
 
-    <div class="rounded-[2rem] border border-slate-200 bg-white/85 p-6 shadow-soft backdrop-blur-sm">
+    <div class="rounded-[2rem] border border-slate-200 bg-white/90 p-6 shadow-soft backdrop-blur-sm">
         <h5 class="text-base font-semibold text-slate-600">Total Applications</h5>
-        <p class="mt-4 text-4xl font-bold tracking-tight text-slate-950"><?= $application_count ?></p>
+        <p class="mt-4 text-4xl font-bold tracking-tight text-slate-900"><?= $application_count ?></p>
     </div>
 
-    <div class="rounded-[2rem] border border-slate-200 bg-white/85 p-6 shadow-soft backdrop-blur-sm">
+    <div class="rounded-[2rem] border border-slate-200 bg-white/90 p-6 shadow-soft backdrop-blur-sm">
         <h5 class="text-base font-semibold text-slate-600">Interview Sessions</h5>
-        <p class="mt-4 text-4xl font-bold tracking-tight text-slate-950"><?= $interview_count ?></p>
+        <p class="mt-4 text-4xl font-bold tracking-tight text-slate-900"><?= $interview_count ?></p>
     </div>
 </div>
 
 <div class="mt-6 flex flex-wrap gap-3">
-    <a href="<?= base_url('admin/users') ?>" class="inline-flex rounded-full border border-sky-200 bg-sky-50 px-4 py-2 text-sm font-semibold text-sky-700 transition hover:border-sky-300 hover:bg-sky-100">Manage Users</a>
-    <a href="<?= base_url('admin/applications') ?>" class="inline-flex rounded-full border border-sky-200 bg-sky-50 px-4 py-2 text-sm font-semibold text-sky-700 transition hover:border-sky-300 hover:bg-sky-100">All Applications</a>
-    <a href="<?= base_url('admin/interviewAnalytics') ?>" class="inline-flex rounded-full border border-sky-200 bg-sky-50 px-4 py-2 text-sm font-semibold text-sky-700 transition hover:border-sky-300 hover:bg-sky-100">Interview Analytics</a>
+    <a href="<?= base_url('admin/users') ?>" class="inline-flex rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-100">Manage Users</a>
+    <a href="<?= base_url('admin/applications') ?>" class="inline-flex rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-100">All Applications</a>
+    <a href="<?= base_url('admin/interviewAnalytics') ?>" class="inline-flex rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-100">Interview Analytics</a>
 </div>
 
 <div class="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px]">
     <div class="space-y-4">
         <div class="flex items-center justify-between gap-3">
             <div>
-                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Job feed</p>
-                <h4 class="mt-2 text-2xl font-bold tracking-tight text-slate-950">Latest jobs on the platform</h4>
+                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Job feed</p>
+                <h4 class="mt-2 text-2xl font-bold tracking-tight text-slate-900">Latest jobs on the platform</h4>
             </div>
-            <span class="rounded-full bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-700 ring-1 ring-sky-200">
+            <span class="rounded-full bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700 ring-1 ring-slate-200">
                 <?= count($feedJobs) ?> jobs
             </span>
         </div>
 
         <?php if (empty($feedJobs)): ?>
-            <div class="rounded-[2rem] border border-sky-200 bg-sky-50 px-5 py-4 text-sm text-sky-800">
+            <div class="rounded-[2rem] border border-slate-200 bg-slate-50 px-5 py-4 text-sm text-slate-700">
                 No jobs available right now.
             </div>
         <?php else: ?>
@@ -71,28 +69,28 @@
                     <article class="overflow-hidden rounded-[2rem] border border-slate-200 bg-white/90 shadow-soft backdrop-blur-sm transition hover:-translate-y-0.5 hover:shadow-xl">
                         <div class="p-5 sm:p-6">
                             <div class="flex items-start gap-4">
-                                <a href="<?= base_url('profile/company/' . $job['employer_id']) ?>" class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-600 to-cyan-500 text-sm font-bold text-white shadow-lg shadow-sky-100">
+                                <a href="<?= base_url('profile/company/' . $job['employer_id']) ?>" class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-slate-100 text-sm font-bold text-slate-700 shadow-sm ring-1 ring-slate-200">
                                     <?= htmlspecialchars(strtoupper(substr((string)($job['employer_display_name'] ?? 'C'), 0, 1)), ENT_QUOTES, 'UTF-8') ?>
                                 </a>
 
                                 <div class="min-w-0 flex-1">
                                     <div class="flex flex-wrap items-center gap-2 text-xs font-semibold">
-                                        <a href="<?= base_url('profile/company/' . $job['employer_id']) ?>" class="text-sky-700 hover:text-sky-600">
+                                        <a href="<?= base_url('profile/company/' . $job['employer_id']) ?>" class="text-slate-700 hover:text-slate-900">
                                             <?= htmlspecialchars((string)$job['employer_display_name'], ENT_QUOTES, 'UTF-8') ?>
                                         </a>
                                         <span class="text-slate-300">&middot;</span>
-                                        <span class="text-slate-400">
+                                        <span class="text-slate-500">
                                             <?= !empty($job['created_at']) ? htmlspecialchars(date('M j, Y', strtotime((string)$job['created_at'])), ENT_QUOTES, 'UTF-8') : 'Just now' ?>
                                         </span>
                                     </div>
 
-                                    <h4 class="mt-3 text-xl font-bold tracking-tight text-slate-950">
-                                        <a href="<?= base_url('job/view/' . $job['id']) ?>" class="hover:text-sky-700">
+                                    <h4 class="mt-3 text-xl font-bold tracking-tight text-slate-900">
+                                        <a href="<?= base_url('job/view/' . $job['id']) ?>" class="hover:text-slate-700">
                                             <?= htmlspecialchars($job['title'], ENT_QUOTES, 'UTF-8') ?>
                                         </a>
                                     </h4>
 
-                                    <p class="mt-2 text-sm text-slate-500">
+                                    <p class="mt-2 text-sm text-slate-600">
                                         <?= htmlspecialchars((string)$job['location'], ENT_QUOTES, 'UTF-8') ?>
                                         <span class="mx-2 text-slate-300">&middot;</span>
                                         <?= htmlspecialchars((string)$job['salary'], ENT_QUOTES, 'UTF-8') ?>
@@ -105,11 +103,13 @@
                             </div>
 
                             <?php if (!empty($job['image_path'])): ?>
-                                <a href="<?= base_url('job/view/' . $job['id']) ?>" class="mt-5 block overflow-hidden rounded-[1.75rem]">
-                                    <img
-                                        src="<?= base_url($job['image_path']) ?>"
-                                        alt="<?= htmlspecialchars($job['title'], ENT_QUOTES, 'UTF-8') ?>"
-                                        class="h-72 w-full object-cover">
+                                <a href="<?= base_url('job/view/' . $job['id']) ?>" class="mt-5 block rounded-[1.75rem] border border-slate-200 bg-slate-50 p-3">
+                                    <div class="flex aspect-[16/9] items-center justify-center overflow-hidden rounded-[1.35rem] bg-white">
+                                        <img
+                                            src="<?= base_url($job['image_path']) ?>"
+                                            alt="<?= htmlspecialchars($job['title'], ENT_QUOTES, 'UTF-8') ?>"
+                                            class="h-full w-full object-contain">
+                                    </div>
                                 </a>
                             <?php endif; ?>
 
@@ -120,7 +120,7 @@
                             <?php endif; ?>
 
                             <div class="mt-5 flex flex-wrap items-center gap-3">
-                                <a href="<?= base_url('job/view/' . $job['id']) ?>" class="inline-flex rounded-full bg-cyan-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-cyan-400">View job</a>
+                                <a href="<?= base_url('job/view/' . $job['id']) ?>" class="inline-flex rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700">View job</a>
                                 <a href="<?= base_url('profile/company/' . $job['employer_id']) ?>" class="inline-flex rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50">View employer</a>
                             </div>
                         </div>

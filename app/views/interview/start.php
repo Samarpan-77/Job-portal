@@ -1,16 +1,16 @@
 <?php require_once BASE_PATH . '/app/views/layout/header.php'; ?>
 
 <section class="mx-auto max-w-4xl space-y-6">
-    <div class="rounded-[2rem] border border-slate-200 bg-white/85 p-8 shadow-soft backdrop-blur-sm">
-        <h3 class="text-3xl font-bold tracking-tight text-slate-950">AI Interview Practice</h3>
+    <div class="rounded-[2rem] border border-slate-200 bg-white/90 p-8 shadow-soft backdrop-blur-sm">
+        <h3 class="text-3xl font-bold tracking-tight text-slate-900">AI Interview Practice</h3>
         <p class="mt-3 text-sm leading-7 text-slate-600">Practice with an HR-style interviewer that asks one question at a time, scores your answers, and helps you improve.</p>
     </div>
 
-    <div class="rounded-[2rem] border border-slate-200 bg-white/85 p-6 shadow-soft backdrop-blur-sm">
+    <div class="rounded-[2rem] border border-slate-200 bg-white/90 p-6 shadow-soft backdrop-blur-sm">
         <div class="grid gap-4 md:grid-cols-[1fr_auto] md:items-end">
             <div>
                 <label class="mb-2 block text-sm font-semibold text-slate-700">Role</label>
-                <select id="role" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100">
+                <select id="role" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-slate-300 focus:bg-white focus:ring-4 focus:ring-slate-100">
                     <option>Backend Developer</option>
                     <option>Frontend Developer</option>
                     <option>Data Analyst</option>
@@ -23,23 +23,23 @@
             </div>
 
             <div class="flex flex-wrap gap-3">
-                <button id="startBtn" class="inline-flex rounded-full bg-sky-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-500 disabled:cursor-not-allowed disabled:opacity-50" onclick="startInterview()">Start HR Interview</button>
+                <button id="startBtn" class="inline-flex rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-50" onclick="startInterview()">Start HR Interview</button>
                 <button id="resetBtn" class="inline-flex rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50" onclick="resetInterview()" disabled>Start New Session</button>
             </div>
         </div>
     </div>
 
-    <div id="statusCard" class="hidden rounded-2xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm text-sky-800"></div>
+    <div id="statusCard" class="hidden rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700"></div>
 
-    <div id="questionCard" class="hidden rounded-[2rem] border border-slate-200 bg-slate-950 p-6 text-white shadow-soft">
-        <p class="mb-2 text-sm text-slate-300" id="questionMeta"></p>
+    <div id="questionCard" class="hidden rounded-[2rem] border border-slate-200 bg-white p-6 text-slate-900 shadow-soft">
+        <p class="mb-2 text-sm text-slate-500" id="questionMeta"></p>
         <h5 class="text-xl font-bold tracking-tight" id="currentQuestion"></h5>
     </div>
 
-    <div class="rounded-[2rem] border border-slate-200 bg-white/85 p-6 shadow-soft backdrop-blur-sm">
+    <div class="rounded-[2rem] border border-slate-200 bg-white/90 p-6 shadow-soft backdrop-blur-sm">
         <label class="mb-2 block text-sm font-semibold text-slate-700">Your Answer</label>
-        <textarea id="answer" class="min-h-40 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100" rows="6" placeholder="Start the interview first, then answer the current HR question..." disabled></textarea>
-        <button id="submitBtn" class="mt-4 inline-flex rounded-full bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-50" onclick="sendInterview()" disabled>Submit Answer</button>
+        <textarea id="answer" class="min-h-40 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-slate-300 focus:bg-white focus:ring-4 focus:ring-slate-100" rows="6" placeholder="Start the interview first, then answer the current HR question..." disabled></textarea>
+        <button id="submitBtn" class="mt-4 inline-flex rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-50" onclick="sendInterview()" disabled>Submit Answer</button>
     </div>
 
     <div id="result" class="space-y-4"></div>
@@ -65,10 +65,10 @@ function escapeHtml(value) {
 function setStatus(message, type = 'info') {
   const el = document.getElementById('statusCard');
   const palette = {
-    info: 'border-sky-200 bg-sky-50 text-sky-800',
-    success: 'border-emerald-200 bg-emerald-50 text-emerald-800',
-    warning: 'border-amber-200 bg-amber-50 text-amber-800',
-    danger: 'border-rose-200 bg-rose-50 text-rose-700'
+    info: 'border-slate-200 bg-slate-50 text-slate-700',
+    success: 'border-slate-200 bg-slate-50 text-slate-700',
+    warning: 'border-slate-200 bg-slate-50 text-slate-700',
+    danger: 'border-slate-200 bg-slate-50 text-slate-700'
   };
   el.className = 'rounded-2xl border px-4 py-3 text-sm ' + (palette[type] || palette.info);
   el.textContent = message;
@@ -150,14 +150,14 @@ function sendInterview() {
       const completed = Boolean(data.completed);
       interviewState.completed = completed;
 
-      let html = '<div class="rounded-[2rem] border border-slate-200 bg-white/85 p-6 shadow-soft backdrop-blur-sm">';
-      html += '<p class="text-sm text-slate-700"><strong class="text-slate-950">Score:</strong> ' + escapeHtml(data.score ?? 0) + '/10</p>';
-      html += '<p class="mt-3 text-sm text-slate-700"><strong class="text-slate-950">Feedback:</strong> ' + escapeHtml(data.feedback ?? 'No feedback available') + '</p>';
+      let html = '<div class="rounded-[2rem] border border-slate-200 bg-white/90 p-6 shadow-soft backdrop-blur-sm">';
+      html += '<p class="text-sm text-slate-700"><strong class="text-slate-900">Score:</strong> ' + escapeHtml(data.score ?? 0) + '/10</p>';
+      html += '<p class="mt-3 text-sm text-slate-700"><strong class="text-slate-900">Feedback:</strong> ' + escapeHtml(data.feedback ?? 'No feedback available') + '</p>';
       if (data.improved_answer) {
-        html += '<p class="mt-3 text-sm text-slate-700"><strong class="text-slate-950">Improved Answer:</strong><br>' + escapeHtml(data.improved_answer) + '</p>';
+        html += '<p class="mt-3 text-sm text-slate-700"><strong class="text-slate-900">Improved Answer:</strong><br>' + escapeHtml(data.improved_answer) + '</p>';
       }
       if (completed && data.final_summary) {
-        html += '<hr class="my-4 border-slate-200"><p class="text-sm text-slate-700"><strong class="text-slate-950">Final HR Summary:</strong><br>' + escapeHtml(data.final_summary) + '</p>';
+      html += '<hr class="my-4 border-slate-200"><p class="text-sm text-slate-700"><strong class="text-slate-900">Final HR Summary:</strong><br>' + escapeHtml(data.final_summary) + '</p>';
       }
       html += '</div>';
       document.getElementById('result').innerHTML = html;
@@ -181,7 +181,7 @@ function sendInterview() {
     .catch(() => {
       document.getElementById('submitBtn').disabled = false;
       document.getElementById('result').innerHTML =
-        '<div class="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">Interview service is unavailable right now.</div>';
+        '<div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">Interview service is unavailable right now.</div>';
       setStatus('Something went wrong while reviewing your answer.', 'danger');
     });
 }

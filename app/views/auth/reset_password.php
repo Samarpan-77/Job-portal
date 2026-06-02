@@ -1,8 +1,8 @@
 <?php require_once BASE_PATH . '/app/views/layout/header.php'; ?>
 
 <section class="mx-auto max-w-2xl">
-    <div class="rounded-[2rem] border border-slate-200 bg-white/85 p-8 shadow-soft backdrop-blur-sm">
-        <h3 class="text-2xl font-bold tracking-tight text-slate-950">Reset Password</h3>
+    <div class="rounded-[2rem] border border-slate-200 bg-white/90 p-8 shadow-soft backdrop-blur-sm">
+        <h3 class="text-2xl font-bold tracking-tight text-slate-900">Reset Password</h3>
 
         <?php if (!empty($errorMessage)): ?>
             <div class="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700" role="alert">
@@ -19,7 +19,7 @@
                     <label class="mb-2 block text-sm font-semibold text-slate-700">New Password</label>
                     <div class="password-field relative">
                         <input type="password" name="password" class="password-input w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 pr-12 text-slate-900 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100" required minlength="8">
-                        <button type="button" class="password-toggle absolute right-3 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:border-sky-500 hover:text-sky-600" aria-label="Show password" aria-pressed="false" data-password-toggle>
+                        <button type="button" class="password-toggle absolute right-3 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:border-slate-300 hover:text-slate-700" aria-label="Show password" aria-pressed="false" data-password-toggle>
                             <span aria-hidden="true">Show</span>
                         </button>
                     </div>
@@ -29,13 +29,13 @@
                     <label class="mb-2 block text-sm font-semibold text-slate-700">Confirm New Password</label>
                     <div class="password-field relative">
                         <input type="password" name="confirm_password" class="password-input w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 pr-12 text-slate-900 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100" required minlength="8">
-                        <button type="button" class="password-toggle absolute right-3 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:border-sky-500 hover:text-sky-600" aria-label="Show password" aria-pressed="false" data-password-toggle>
+                        <button type="button" class="password-toggle absolute right-3 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:border-slate-300 hover:text-slate-700" aria-label="Show password" aria-pressed="false" data-password-toggle>
                             <span aria-hidden="true">Show</span>
                         </button>
                     </div>
                 </div>
 
-                <button class="inline-flex w-full items-center justify-center rounded-2xl bg-emerald-600 px-5 py-3 font-semibold text-white transition hover:bg-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-200">Reset Password</button>
+                <button class="inline-flex w-full items-center justify-center rounded-2xl bg-slate-900 px-5 py-3 font-semibold text-white transition hover:bg-slate-700 focus:outline-none focus:ring-4 focus:ring-slate-200">Reset Password</button>
             </form>
         <?php endif; ?>
 

@@ -1,19 +1,19 @@
 <?php require_once BASE_PATH . '/app/views/layout/header.php'; ?>
 
 <section class="mx-auto grid max-w-5xl gap-8 lg:grid-cols-[1.15fr_0.85fr]">
-    <div class="relative overflow-hidden rounded-[2rem] border border-slate-200 bg-slate-950 p-8 text-white shadow-soft lg:p-10">
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(45,212,191,0.2),_transparent_30%),radial-gradient(circle_at_bottom_left,_rgba(14,165,233,0.18),_transparent_28%)]" style="background-color: rgba(8, 164, 248, 0.9);"></div>
+    <div class="relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-8 text-slate-900 shadow-soft lg:p-10">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(148,163,184,0.18),_transparent_30%),radial-gradient(circle_at_bottom_left,_rgba(226,232,240,0.7),_transparent_28%)]"></div>
         <div class="relative grid gap-8">
             <div>
                 <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">Create your account</h2>
-                <p class="mt-4 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">Join as a job seeker or employer and manage hiring with a clean and structured dashboard.</p>
+                <p class="mt-4 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">Join as a job seeker or employer and manage hiring with a clean and structured dashboard.</p>
             </div>
-            <img class="w-full h-auto rounded-3xl object-contain shadow-xl shadow-sky-950/30" src="<?= base_url('../images/Image2.png') ?>" alt="Hiring and career planning">
+            <img class="w-full h-auto rounded-3xl object-contain shadow-xl shadow-slate-100" src="<?= base_url('../images/Image2.png') ?>" alt="Hiring and career planning">
         </div>
     </div>
 
-    <div class="rounded-[2rem] border border-slate-200 bg-white/85 p-8 shadow-soft backdrop-blur-sm">
-        <h3 class="text-2xl font-bold tracking-tight text-slate-950">Register</h3>
+    <div class="rounded-[2rem] border border-slate-200 bg-white/90 p-8 shadow-soft backdrop-blur-sm">
+        <h3 class="text-2xl font-bold tracking-tight text-slate-900">Register</h3>
 
         <?php if (!empty($errorMessage)): ?>
             <div class="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700" role="alert">
@@ -40,7 +40,7 @@
                     <input type="password" id="register-password" name="password" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 pr-12 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100" required>
                     <button
                         type="button"
-                        class="absolute inset-y-0 right-3 my-auto inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:border-sky-500 hover:text-sky-600"
+                        class="absolute inset-y-0 right-3 my-auto inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
                         data-toggle-password="register-password"
                         aria-label="Show password"
                         title="Show password">&#128065;</button>
@@ -61,7 +61,7 @@
                 </div>
             <?php endif; ?>
 
-            <button class="inline-flex w-full items-center justify-center rounded-2xl bg-emerald-600 px-5 py-3 font-semibold text-white transition hover:bg-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-200">Register</button>
+            <button class="inline-flex w-full items-center justify-center rounded-2xl bg-slate-900 px-5 py-3 font-semibold text-white transition hover:bg-slate-700 focus:outline-none focus:ring-4 focus:ring-slate-200">Register</button>
         </form>
     </div>
 </section>
